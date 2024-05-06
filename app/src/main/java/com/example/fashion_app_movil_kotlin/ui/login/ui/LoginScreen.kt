@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -75,6 +76,15 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
     ) {// Add padding around the content)
         HeaderImage(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.padding(16.dp))
+        Text( // Welcome Text
+            text = "¡Bienvenido a Fashion App!",
+            modifier = Modifier.fillMaxWidth(),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            color = Color.Black // Adjust color as needed
+        )
+        Spacer(modifier = Modifier.padding(4.dp))
         EmailField(email) { viewModel.onLoginChanged(it, password) }
         Spacer(modifier = Modifier.padding(4.dp))
         PasswordField(password) { viewModel.onLoginChanged(email, it) }
