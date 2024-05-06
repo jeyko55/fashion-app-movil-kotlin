@@ -1,6 +1,7 @@
 package com.example.fashion_app_movil_kotlin.ui.login.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,13 +22,13 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fashion_app_movil_kotlin.R
@@ -37,10 +39,13 @@ fun LoginScreen(viewModel: LoginViewModel) {
     Box(
         Modifier
             .fillMaxSize()
-            .padding(top = 24.dp)
+
     ) {
         BackgroundImage(Modifier.fillMaxSize())
-        Login(Modifier.align(Alignment.Center), viewModel)
+        Box {
+            Login(Modifier.align(Alignment.Center), viewModel)
+        }
+
     }
 }
 
@@ -60,29 +65,42 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
     val email: String by viewModel.email.observeAsState(initial = "")
     val password: String by viewModel.password.observeAsState(initial = "")
     val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
-    val isLoading:Boolean by viewModel.isLoading.observeAsState(initial = false)
+    val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
     val coroutineScope = rememberCoroutineScope()
 
-    if (isLoading){
-        Box(Modifier.fillMaxSize())
-        {
+    if (isLoading) {
+        Box(Modifier.fillMaxSize()) {
             CircularProgressIndicator(Modifier.align(Alignment.Center))
         }
     } else {
-        Column(modifier = modifier) {
+        Column(
+            modifier = modifier
+                .fillMaxWidth() // Occupy full width
+                .padding(32.dp)
+        ) {// Add padding around the content)
             HeaderImage(Modifier.align(Alignment.CenterHorizontally))
             Spacer(modifier = Modifier.padding(16.dp))
+            Text( // Welcome Text
+                text = "¡Bienvenido a Fashion App!",
+                modifier = Modifier.fillMaxWidth(),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                color = Color.Black // Adjust color as needed
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
             EmailField(email) { viewModel.onLoginChanged(it, password) }
             Spacer(modifier = Modifier.padding(4.dp))
             PasswordField(password) { viewModel.onLoginChanged(email, it) }
             Spacer(modifier = Modifier.padding(8.dp))
-            ForgotPassword(Modifier.align(Alignment.End))
             Spacer(modifier = Modifier.padding(16.dp))
             LoginButton(loginEnable) {
                 coroutineScope.launch {
                     viewModel.onLoginSelected()
                 }
             }
+            Spacer(modifier = Modifier.padding(4.dp))
+            ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
         }
     }
 }
@@ -91,7 +109,8 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
 @Composable
 fun PasswordField(password: String, onTextFieldChanged: (String) -> Unit) {
     TextField(
-        value = password, onValueChange = { onTextFieldChanged(it) },
+        value = password,
+        onValueChange = { onTextFieldChanged(it) },
         placeholder = { Text(text = "Contraseña") },
         modifier = Modifier.fillMaxWidth(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -103,7 +122,6 @@ fun PasswordField(password: String, onTextFieldChanged: (String) -> Unit) {
         )
     )
 }
-
 
 @Composable
 fun LoginButton(loginEnable: Boolean, onLoginSelected: () -> Unit) {
@@ -144,11 +162,10 @@ fun EmailField(email: String, onTextFieldChanged: (String) -> Unit) {
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         singleLine = true,
         maxLines = 1,
-        colors = TextFieldDefaults.textFieldColors(
+        colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
+            unfocusedIndicatorColor = Color.Transparent,
         )
-
     )
 }
 
@@ -157,6 +174,8 @@ fun HeaderImage(modifier: Modifier) {
     Image(
         painter = painterResource(id = R.drawable.logo_fashionapp),
         contentDescription = "Header",
-        modifier = Modifier
+        modifier = modifier
+            .fillMaxWidth()
+            .height(200.dp)
     )
 }

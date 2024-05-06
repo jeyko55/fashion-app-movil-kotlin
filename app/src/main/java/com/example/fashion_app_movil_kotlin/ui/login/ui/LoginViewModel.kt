@@ -9,17 +9,17 @@ import kotlinx.coroutines.delay
 
 class LoginViewModel : ViewModel() {
 
-    private val _email = MutableLiveData<String>();
-    val email : LiveData<String> = _email;
+    private val _email = MutableLiveData<String>()
+    val email : LiveData<String> = _email
 
-    private val _password = MutableLiveData<String>();
-    val password : LiveData<String> = _password;
+    private val _password = MutableLiveData<String>()
+    val password : LiveData<String> = _password
 
-    private val _loginEnable = MutableLiveData<Boolean>();
-    val loginEnable : LiveData<Boolean> = _loginEnable;
+    private val _loginEnable = MutableLiveData<Boolean>()
+    val loginEnable : LiveData<Boolean> = _loginEnable
 
-    private val _isLoading = MutableLiveData<Boolean>();
-    val isLoading : LiveData<Boolean> = _isLoading;
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
 
     fun onLoginChanged(email: String, password: String) {
         _email.value = email
@@ -35,4 +35,5 @@ class LoginViewModel : ViewModel() {
         delay(4000)
         _isLoading.value = false
     }
+
 }
