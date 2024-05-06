@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginRegisterScreen(viewModel: LoginRegisterViewModel){
+fun LoginRegisterScreen(viewModel: LoginRegisterViewModel) {
     Box(
         Modifier
             .fillMaxSize()
@@ -89,7 +89,7 @@ fun RedirectedToRegisterButton(onClickSelected: () -> Unit) {
             containerColor = Color.Transparent,
             contentColor = Color(0xFF1A1A1A),
 
-        ),
+            ),
         border = BorderStroke(width = 2.dp, color = Color.Black), // Delineado redondeado
 
     ) {
