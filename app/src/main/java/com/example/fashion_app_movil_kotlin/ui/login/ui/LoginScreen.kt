@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -41,10 +42,13 @@ fun LoginScreen(viewModel: LoginViewModel) {
     Box(
         Modifier
             .fillMaxSize()
-            .padding(top = 24.dp)
+
     ) {
         BackgroundImage(Modifier.fillMaxSize())
-        Login(Modifier.align(Alignment.Center), viewModel)
+        Box {
+            Login(Modifier.align(Alignment.Center), viewModel)
+        }
+
     }
 }
 
@@ -65,7 +69,10 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
     val password: String by viewModel.password.observeAsState(initial = "")
     val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
 
-    Column(modifier = modifier) {
+    Column(modifier = modifier
+        .fillMaxWidth() // Occupy full width
+        .padding(32.dp)
+    ) {// Add padding around the content)
         HeaderImage(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.padding(16.dp))
         EmailField(email) { viewModel.onLoginChanged(it, password) }
@@ -148,6 +155,6 @@ fun HeaderImage(modifier: Modifier) {
     Image(
         painter = painterResource(id = R.drawable.logo_fashionapp),
         contentDescription = "Header",
-        modifier = Modifier
+        modifier = modifier.fillMaxWidth().height(200.dp)
     )
 }
