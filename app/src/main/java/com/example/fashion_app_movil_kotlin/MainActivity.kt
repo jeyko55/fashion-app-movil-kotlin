@@ -6,12 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.fashion_app_movil_kotlin.ui.login.ui.LoginRegisterScreen
+import com.example.fashion_app_movil_kotlin.ui.login.ui.LoginRegisterViewModel
 import com.example.fashion_app_movil_kotlin.ui.login.ui.LoginScreen
 import com.example.fashion_app_movil_kotlin.ui.login.ui.LoginViewModel
+import com.example.fashion_app_movil_kotlin.ui.login.ui.RegisterScreen
+import com.example.fashion_app_movil_kotlin.ui.login.ui.RegisterViewModel
 import com.example.fashion_app_movil_kotlin.ui.theme.FashionappmovilkotlinTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,6 +26,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     LoginScreen(LoginViewModel())
+                    // LoginRegisterScreen(LoginRegisterViewModel())
+                    // RegisterScreen(RegisterViewModel())
                 }
             }
         }
