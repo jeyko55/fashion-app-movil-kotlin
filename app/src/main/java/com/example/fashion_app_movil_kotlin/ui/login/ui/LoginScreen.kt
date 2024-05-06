@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Alignment
@@ -37,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import com.example.fashion_app_movil_kotlin.R
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel) {
@@ -70,29 +73,43 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
     val password: String by viewModel.password.observeAsState(initial = "")
     val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
 
-    Column(modifier = modifier
-        .fillMaxWidth() // Occupy full width
-        .padding(32.dp)
-    ) {// Add padding around the content)
-        HeaderImage(Modifier.align(Alignment.CenterHorizontally))
-        Spacer(modifier = Modifier.padding(16.dp))
-        Text( // Welcome Text
-            text = "¡Bienvenido a Fashion App!",
-            modifier = Modifier.fillMaxWidth(),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            color = Color.Black // Adjust color as needed
-        )
-        Spacer(modifier = Modifier.padding(4.dp))
-        EmailField(email) { viewModel.onLoginChanged(it, password) }
-        Spacer(modifier = Modifier.padding(4.dp))
-        PasswordField(password) { viewModel.onLoginChanged(email, it) }
-        Spacer(modifier = Modifier.padding(8.dp))
-        Spacer(modifier = Modifier.padding(16.dp))
-        LoginButton(loginEnable) { viewModel.onLoginSelected() }
-        Spacer(modifier = Modifier.padding(4.dp))
-        ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
+    val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
+    val coroutineScope = rememberCoroutineScope()
+
+    if (isLoading) {
+        Box(Modifier.fillMaxSize()) {
+            CircularProgressIndicator(Modifier.align(Alignment.Center))
+        }
+    } else {
+        Column(
+            modifier = modifier
+                .fillMaxWidth() // Occupy full width
+                .padding(32.dp)
+        ) {// Add padding around the content)
+            HeaderImage(Modifier.align(Alignment.CenterHorizontally))
+            Spacer(modifier = Modifier.padding(16.dp))
+            Text( // Welcome Text
+                text = "¡Bienvenido a Fashion App!",
+                modifier = Modifier.fillMaxWidth(),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                color = Color.Black // Adjust color as needed
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
+            EmailField(email) { viewModel.onLoginChanged(it, password) }
+            Spacer(modifier = Modifier.padding(4.dp))
+            PasswordField(password) { viewModel.onLoginChanged(email, it) }
+            Spacer(modifier = Modifier.padding(8.dp))
+            Spacer(modifier = Modifier.padding(16.dp))
+            LoginButton(loginEnable) {
+                coroutineScope.launch {
+                    viewModel.onLoginSelected()
+                }
+            }
+            Spacer(modifier = Modifier.padding(4.dp))
+            ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
+        }
     }
 }
 
@@ -165,6 +182,8 @@ fun HeaderImage(modifier: Modifier) {
     Image(
         painter = painterResource(id = R.drawable.logo_fashionapp),
         contentDescription = "Header",
-        modifier = modifier.fillMaxWidth().height(200.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .height(200.dp)
     )
 }
