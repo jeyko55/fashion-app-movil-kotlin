@@ -1,6 +1,7 @@
 package com.example.fashion_app_movil_kotlin.ui.login.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,14 +21,22 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import com.example.fashion_app_movil_kotlin.R
 import kotlinx.coroutines.launch
 
@@ -36,27 +45,20 @@ fun LoginScreen(viewModel: LoginViewModel) {
     Box(
         Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(top = 24.dp)
     ) {
+        BackgroundImage(Modifier.fillMaxSize())
         Login(Modifier.align(Alignment.Center), viewModel)
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordField(password: String, onTextFieldChanged: (String) -> Unit) {
-    TextField(
-        value = password, onValueChange = { onTextFieldChanged(it) },
-        placeholder = { Text(text = "Contraseña") },
-        modifier = Modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        singleLine = true,
-        maxLines = 1,
-        colors = TextFieldDefaults.textFieldColors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        )
+fun BackgroundImage(modifier: Modifier) {
+    Image(
+        painter = painterResource(id = R.drawable.image_6), // Replace with your image resource
+        contentDescription = "Background",
+        modifier = modifier
+            .fillMaxSize() // Cover the entire screen
     )
 }
 
@@ -89,12 +91,27 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
                     viewModel.onLoginSelected()
                 }
             }
-
         }
     }
-
-
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PasswordField(password: String, onTextFieldChanged: (String) -> Unit) {
+    TextField(
+        value = password, onValueChange = { onTextFieldChanged(it) },
+        placeholder = { Text(text = "Contraseña") },
+        modifier = Modifier.fillMaxWidth(),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        singleLine = true,
+        maxLines = 1,
+        colors = TextFieldDefaults.textFieldColors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
+    )
+}
+
 
 @Composable
 fun LoginButton(loginEnable: Boolean, onLoginSelected: () -> Unit) {
@@ -102,14 +119,14 @@ fun LoginButton(loginEnable: Boolean, onLoginSelected: () -> Unit) {
         onClick = { onLoginSelected() },
         modifier = Modifier
             .fillMaxWidth()
-            .height(48.dp),
+            .height(48.dp), // Color similar a las vistas de Figma
         colors = ButtonDefaults.buttonColors(
             disabledContentColor = Color.White,
             contentColor = Color.White,
-            containerColor = Color(0xFFFF4303),
+            containerColor = Color(0xFF03A9F4),
         ), enabled = loginEnable
     ) {
-        Text(text = "Iniciar sesion")
+        Text(text = "Iniciar sesión")
     }
 }
 
@@ -120,7 +137,7 @@ fun ForgotPassword(modifier: Modifier) {
         modifier = modifier.clickable { },
         fontSize = 12.sp,
         fontWeight = FontWeight.Bold,
-        color = Color(0xFFFB9600)
+        color = Color(0xFF000000)
     )
 }
 
@@ -139,7 +156,6 @@ fun EmailField(email: String, onTextFieldChanged: (String) -> Unit) {
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
         )
-        // Corregir el uso de esta librería para los colores del textField en API 24
 
     )
 }

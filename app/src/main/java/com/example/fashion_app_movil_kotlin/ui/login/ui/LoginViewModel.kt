@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.delay
 
+
 class LoginViewModel : ViewModel() {
 
     private val _email = MutableLiveData<String>();
@@ -23,7 +24,6 @@ class LoginViewModel : ViewModel() {
     fun onLoginChanged(email: String, password: String) {
         _email.value = email
         _password.value = password
-
         _loginEnable.value = isValidEmail(email) && isValidPassword(password)
     }
 
@@ -35,5 +35,4 @@ class LoginViewModel : ViewModel() {
         delay(4000)
         _isLoading.value = false
     }
-
 }
