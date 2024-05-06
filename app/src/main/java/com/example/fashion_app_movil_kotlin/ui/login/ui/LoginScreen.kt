@@ -76,10 +76,10 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
         Column(
             modifier = modifier
                 .fillMaxWidth() // Occupy full width
-                .padding(32.dp)
+                .padding(24.dp)
         ) {// Add padding around the content)
             HeaderImage(Modifier.align(Alignment.CenterHorizontally))
-            Spacer(modifier = Modifier.padding(16.dp))
+            Spacer(modifier = Modifier.padding(12.dp))
             Text( // Welcome Text
                 text = "¡Bienvenido a Fashion App!",
                 modifier = Modifier.fillMaxWidth(),

@@ -11,6 +11,8 @@ import com.example.fashion_app_movil_kotlin.ui.login.ui.LoginRegisterScreen
 import com.example.fashion_app_movil_kotlin.ui.login.ui.LoginRegisterViewModel
 import com.example.fashion_app_movil_kotlin.ui.login.ui.LoginScreen
 import com.example.fashion_app_movil_kotlin.ui.login.ui.LoginViewModel
+import com.example.fashion_app_movil_kotlin.ui.login.ui.RegisterScreen
+import com.example.fashion_app_movil_kotlin.ui.login.ui.RegisterViewModel
 import com.example.fashion_app_movil_kotlin.ui.theme.FashionappmovilkotlinTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,6 +27,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     LoginScreen(LoginViewModel())
                     // LoginRegisterScreen(LoginRegisterViewModel())
+                    // RegisterScreen(RegisterViewModel())
                 }
             }
         }
