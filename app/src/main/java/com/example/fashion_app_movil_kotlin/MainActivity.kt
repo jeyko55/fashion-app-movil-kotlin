@@ -3,32 +3,43 @@ package com.example.fashion_app_movil_kotlin
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
-import com.example.fashion_app_movil_kotlin.ui.login.ui.LoginRegisterScreen
-import com.example.fashion_app_movil_kotlin.ui.login.ui.LoginRegisterViewModel
-import com.example.fashion_app_movil_kotlin.ui.login.ui.LoginScreen
-import com.example.fashion_app_movil_kotlin.ui.login.ui.LoginViewModel
-import com.example.fashion_app_movil_kotlin.ui.login.ui.RegisterScreen
-import com.example.fashion_app_movil_kotlin.ui.login.ui.RegisterViewModel
+import androidx.activity.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.room.Room
+import com.example.fashion_app_movil_kotlin.database.FashionAppDatabase
+import com.example.fashion_app_movil_kotlin.ui.FashionApp
 import com.example.fashion_app_movil_kotlin.ui.theme.FashionappmovilkotlinTheme
+import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
+
 
 class MainActivity : ComponentActivity() {
+
+    val db by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            FashionAppDatabase::class.java,
+            "FashionApp_Database"
+        ).build()
+    }
+
+    val userViewModel by viewModels<UserViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory{
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return UserViewModel(db.userDao) as T
+                }
+            }
+        }
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             FashionappmovilkotlinTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    // LoginScreen(LoginViewModel())
-                     LoginRegisterScreen(LoginRegisterViewModel())
-                    // RegisterScreen(RegisterViewModel())
-                }
+                FashionApp(
+                    userViewModel = userViewModel
+                )
             }
         }
     }

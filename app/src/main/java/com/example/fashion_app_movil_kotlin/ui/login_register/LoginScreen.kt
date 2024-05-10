@@ -1,0 +1,184 @@
+package com.example.fashion_app_movil_kotlin.ui.login_register
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.fashion_app_movil_kotlin.R
+import com.example.fashion_app_movil_kotlin.events.UserEvent
+import com.example.fashion_app_movil_kotlin.states.UserState
+import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
+
+@Composable
+fun LoginScreen(
+    userViewModel: UserViewModel,
+    onEvent: (UserEvent) -> Unit,
+    onUserValidNav: () -> Unit
+) {
+    val userState by userViewModel.state.collectAsState()
+
+    Box(
+        Modifier
+            .fillMaxSize()
+
+    ) {
+        BackgroundImage(Modifier.fillMaxSize())
+        Box {
+            LoginPortrait(
+                Modifier.align(Alignment.Center),
+                userState,
+                onEvent,
+                onUserValidNav
+            )
+        }
+    }
+}
+
+@Composable
+fun BackgroundImage(modifier: Modifier) {
+    Image(
+        painter = painterResource(id = R.drawable.image_6), // Replace with your image resource
+        contentDescription = "Background",
+        modifier = modifier
+            .fillMaxSize() // Cover the entire screen
+    )
+}
+
+@Composable
+fun LoginPortrait(
+    modifier: Modifier,
+    state: UserState,
+    onEvent: (UserEvent) -> Unit,
+    onUserValidNav: () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth() // Occupy full width
+            .padding(24.dp)
+    ) {// Add padding around the content)
+        HeaderImage(Modifier.align(Alignment.CenterHorizontally))
+
+        Spacer(modifier = Modifier.padding(12.dp))
+
+        Text( // Welcome Text
+            text = "¡Bienvenido a Fashion App!",
+            modifier = Modifier.fillMaxWidth(),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            color = Color.Black // Adjust color as needed
+        )
+        Spacer(modifier = Modifier.padding(4.dp))
+
+        TextField(
+            // Email Field
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text(text = "Email") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            singleLine = true,
+            maxLines = 1,
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+            ),
+            value = state.email,
+            onValueChange = {
+                onEvent(UserEvent.SetEmail(it))
+            },
+            isError = !state.isEmailValid // Set error state based on isEmailValid
+        )
+
+        Spacer(modifier = Modifier.padding(4.dp))
+
+        @OptIn(ExperimentalMaterial3Api::class)
+        TextField( // Password Field
+            placeholder = { Text(text = "Contraseña") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            singleLine = true,
+            maxLines = 1,
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            value = state.password,
+            onValueChange = {
+                onEvent(UserEvent.SetPassword(it))
+            },
+            visualTransformation = PasswordVisualTransformation(),
+            isError = !state.isPasswordValid // Set error state based on isPasswordValid
+
+        )
+
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        Spacer(modifier = Modifier.padding(16.dp))
+
+        Button( // Login Button
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp), // Color similar a las vistas de Figma
+            colors = ButtonDefaults.buttonColors(
+                disabledContentColor = Color.White,
+                contentColor = Color.White,
+                containerColor = Color(0xFF03A9F4),
+            ),
+            onClick = {
+                onEvent(UserEvent.ValidateUser)
+                onUserValidNav()
+            },
+        ) {
+            Text(text = "Iniciar sesión")
+        }
+        
+        Spacer(modifier = Modifier.padding(4.dp))
+        
+        ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
+    }
+}
+
+@Composable
+fun ForgotPassword(modifier: Modifier) {
+    Text(
+        text = "¿Olvidaste la contraseña?",
+        modifier = modifier.clickable { },
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color(0xFF000000)
+    )
+}
+
+@Composable
+fun HeaderImage(modifier: Modifier) {
+    Image(
+        painter = painterResource(id = R.drawable.logo_fashionapp),
+        contentDescription = "Header",
+        modifier = modifier
+            .fillMaxWidth()
+            .height(200.dp)
+    )
+}
