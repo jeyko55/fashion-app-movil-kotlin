@@ -1,4 +1,4 @@
-package com.example.fashion_app_movil_kotlin.ui.login.ui
+package com.example.fashion_app_movil_kotlin.ui.login_register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -29,13 +29,21 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.example.fashion_app_movil_kotlin.R
+import com.example.fashion_app_movil_kotlin.events.UserEvent
+import com.example.fashion_app_movil_kotlin.view_models.LoginViewModel
+import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 import kotlinx.coroutines.launch
 
-
 @Composable
-fun LoginScreen(viewModel: LoginViewModel){
+fun LoginScreen(
+    userViewModel: UserViewModel,
+    onEvent: (UserEvent) -> Unit,
+    onUserLoggedNav: () -> Unit
+) {
+    val userState by userViewModel.state.collectAsState()
+
     Box(
         Modifier
             .fillMaxSize()
@@ -43,7 +51,7 @@ fun LoginScreen(viewModel: LoginViewModel){
     ) {
         BackgroundImage(Modifier.fillMaxSize())
         Box {
-            Login(Modifier.align(Alignment.Center), viewModel)
+            LoginPortrait(Modifier.align(Alignment.Center), userViewModel)
         }
 
     }
@@ -60,7 +68,7 @@ fun BackgroundImage(modifier: Modifier) {
 }
 
 @Composable
-fun Login(modifier: Modifier, viewModel: LoginViewModel) {
+fun LoginPortrait(modifier: Modifier, userViewModel: UserViewModel) {
 
     val email: String by viewModel.email.observeAsState(initial = "")
     val password: String by viewModel.password.observeAsState(initial = "")

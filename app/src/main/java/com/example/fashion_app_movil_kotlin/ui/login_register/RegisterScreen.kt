@@ -1,7 +1,5 @@
-package com.example.fashion_app_movil_kotlin.ui.login.ui
+package com.example.fashion_app_movil_kotlin.ui.login_register
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,18 +22,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.fashion_app_movil_kotlin.R
+import androidx.navigation.NavController
+import com.example.fashion_app_movil_kotlin.view_models.RegisterViewModel
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun RegisterScreen(viewModel: RegisterViewModel){
+fun RegisterScreen(viewModel: RegisterViewModel, navController: NavController){
     Box(
         Modifier
             .fillMaxSize()
@@ -48,7 +46,6 @@ fun RegisterScreen(viewModel: RegisterViewModel){
 
     }
 }
-
 
 @Composable
 fun Register(modifier: Modifier, viewModel: RegisterViewModel) {

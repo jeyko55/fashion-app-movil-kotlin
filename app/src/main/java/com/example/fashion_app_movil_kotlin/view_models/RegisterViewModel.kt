@@ -1,4 +1,4 @@
-package com.example.fashion_app_movil_kotlin.ui.login.ui
+package com.example.fashion_app_movil_kotlin.view_models
 
 import android.util.Patterns
 import androidx.lifecycle.LiveData
@@ -32,13 +32,13 @@ class RegisterViewModel : ViewModel() {
     fun onRegisterChanged(
         name: String,
         email: String,
-        phone: String,
+        phoneNumber: String,
         password: String,
         confirmationPassword: String,
         ) {
         _name.value = name
         _email.value = email
-        _phone.value = phone
+        _phone.value = phoneNumber
         _password.value = password
         _confirmationPassword.value = confirmationPassword
         _registerEnable.value =
@@ -50,7 +50,7 @@ class RegisterViewModel : ViewModel() {
                     isValidPassword(password) &&
                     isValidName(name) &&
                     isValidConfirmationPassword(confirmationPassword, password) &&
-                    isValidPhone(phone)
+                    isValidPhone(phoneNumber)
 
     }
 

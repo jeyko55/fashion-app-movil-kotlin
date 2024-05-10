@@ -1,4 +1,4 @@
-package com.example.fashion_app_movil_kotlin.ui.login.ui
+package com.example.fashion_app_movil_kotlin.view_models
 
 import android.util.Patterns
 import androidx.lifecycle.LiveData
@@ -8,6 +8,10 @@ import kotlinx.coroutines.delay
 
 
 class LoginViewModel : ViewModel() {
+
+
+
+    //ESTA ERA LA VERSIÓN ANTERIOR: NO TIENE UTILIDAD PORQUE HAY ES QUE OBTENER LOS DATOS DE LA BASE DE DATOS PARA LOGUEAR EL USUARIO
 
     private val _email = MutableLiveData<String>()
     val email : LiveData<String> = _email
