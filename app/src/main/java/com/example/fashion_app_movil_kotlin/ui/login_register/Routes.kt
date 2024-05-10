@@ -4,4 +4,6 @@ object Routes {
     val LOGINREGISTER_SCREEN = "loginRegisterScreen"
     val LOGIN_SCREEN = "loginScreen"
     val REGISTER_SCREEN = "registerScreen"
+    val HOME_SCREEN = "homeScreen"
+
 }

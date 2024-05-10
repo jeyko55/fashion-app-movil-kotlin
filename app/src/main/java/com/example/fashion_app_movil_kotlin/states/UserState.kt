@@ -8,5 +8,9 @@ data class UserState (
     val email: String = "",
     val phoneNumber: String = "",
     val password: String = "",
-    val isAddingUser: Boolean = false
+    val confirmPassword: String = "",
+    val isAddingUser: Boolean = false,
+    val isLoggedIn: Boolean = false, // Add isLoggedIn property
+    val isEmailValid: Boolean = true, // Add isEmailValid property
+    val isPasswordValid: Boolean = true // Add isPasswordValid property
 )

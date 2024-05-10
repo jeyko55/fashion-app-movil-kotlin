@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.fashion_app_movil_kotlin.R
 import com.example.fashion_app_movil_kotlin.events.UserEvent
+import com.example.fashion_app_movil_kotlin.states.UserState
 import com.example.fashion_app_movil_kotlin.view_models.LoginViewModel
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 import kotlinx.coroutines.launch
@@ -40,7 +41,7 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     userViewModel: UserViewModel,
     onEvent: (UserEvent) -> Unit,
-    onUserLoggedNav: () -> Unit
+    onUserValidNav: () -> Unit
 ) {
     val userState by userViewModel.state.collectAsState()
 
@@ -51,9 +52,13 @@ fun LoginScreen(
     ) {
         BackgroundImage(Modifier.fillMaxSize())
         Box {
-            LoginPortrait(Modifier.align(Alignment.Center), userViewModel)
+            LoginPortrait(
+                Modifier.align(Alignment.Center),
+                userState,
+                onEvent,
+                onUserValidNav
+            )
         }
-
     }
 }
 
@@ -68,83 +73,94 @@ fun BackgroundImage(modifier: Modifier) {
 }
 
 @Composable
-fun LoginPortrait(modifier: Modifier, userViewModel: UserViewModel) {
+fun LoginPortrait(
+    modifier: Modifier,
+    state: UserState,
+    onEvent: (UserEvent) -> Unit,
+    onUserValidNav: () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth() // Occupy full width
+            .padding(24.dp)
+    ) {// Add padding around the content)
+        HeaderImage(Modifier.align(Alignment.CenterHorizontally))
 
-    val email: String by viewModel.email.observeAsState(initial = "")
-    val password: String by viewModel.password.observeAsState(initial = "")
-    val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
-    val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
-    val coroutineScope = rememberCoroutineScope()
+        Spacer(modifier = Modifier.padding(12.dp))
 
-    if (isLoading) {
-        Box(Modifier.fillMaxSize()) {
-            CircularProgressIndicator(Modifier.align(Alignment.Center))
-        }
-    } else {
-        Column(
-            modifier = modifier
-                .fillMaxWidth() // Occupy full width
-                .padding(24.dp)
-        ) {// Add padding around the content)
-            HeaderImage(Modifier.align(Alignment.CenterHorizontally))
-            Spacer(modifier = Modifier.padding(12.dp))
-            Text( // Welcome Text
-                text = "¡Bienvenido a Fashion App!",
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                color = Color.Black // Adjust color as needed
-            )
-            Spacer(modifier = Modifier.padding(4.dp))
-            EmailField(email) { viewModel.onLoginChanged(it, password) }
-            Spacer(modifier = Modifier.padding(4.dp))
-            PasswordField(password) { viewModel.onLoginChanged(email, it) }
-            Spacer(modifier = Modifier.padding(8.dp))
-            Spacer(modifier = Modifier.padding(16.dp))
-            LoginButton(loginEnable) {
-                coroutineScope.launch {
-                    viewModel.onLoginSelected()
-                }
-            }
-            Spacer(modifier = Modifier.padding(4.dp))
-            ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PasswordField(password: String, onTextFieldChanged: (String) -> Unit) {
-    TextField(
-        value = password,
-        onValueChange = { onTextFieldChanged(it) },
-        placeholder = { Text(text = "Contraseña") },
-        modifier = Modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        singleLine = true,
-        maxLines = 1,
-        colors = TextFieldDefaults.textFieldColors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
+        Text( // Welcome Text
+            text = "¡Bienvenido a Fashion App!",
+            modifier = Modifier.fillMaxWidth(),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            color = Color.Black // Adjust color as needed
         )
-    )
-}
+        Spacer(modifier = Modifier.padding(4.dp))
 
-@Composable
-fun LoginButton(loginEnable: Boolean, onLoginSelected: () -> Unit) {
-    Button(
-        onClick = { onLoginSelected() },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp), // Color similar a las vistas de Figma
-        colors = ButtonDefaults.buttonColors(
-            disabledContentColor = Color.White,
-            contentColor = Color.White,
-            containerColor = Color(0xFF03A9F4),
-        ), enabled = loginEnable
-    ) {
-        Text(text = "Iniciar sesión")
+        TextField(
+            // Email Field
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text(text = "Email") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            singleLine = true,
+            maxLines = 1,
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+            ),
+            value = state.email,
+            onValueChange = {
+                onEvent(UserEvent.SetEmail(it))
+            },
+            isError = !state.isEmailValid // Set error state based on isEmailValid
+        )
+
+        Spacer(modifier = Modifier.padding(4.dp))
+
+        @OptIn(ExperimentalMaterial3Api::class)
+        TextField( // Password Field
+            placeholder = { Text(text = "Contraseña") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            singleLine = true,
+            maxLines = 1,
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            value = state.password,
+            onValueChange = {
+                onEvent(UserEvent.SetPassword(it))
+            },
+            isError = !state.isPasswordValid // Set error state based on isPasswordValid
+
+        )
+
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        Spacer(modifier = Modifier.padding(16.dp))
+
+        Button( // Login Button
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp), // Color similar a las vistas de Figma
+            colors = ButtonDefaults.buttonColors(
+                disabledContentColor = Color.White,
+                contentColor = Color.White,
+                containerColor = Color(0xFF03A9F4),
+            ),
+            onClick = {
+                onEvent(UserEvent.ValidateUser)
+                onUserValidNav()
+            },
+        ) {
+            Text(text = "Iniciar sesión")
+        }
+        
+        Spacer(modifier = Modifier.padding(4.dp))
+        
+        ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
     }
 }
 
@@ -156,24 +172,6 @@ fun ForgotPassword(modifier: Modifier) {
         fontSize = 12.sp,
         fontWeight = FontWeight.Bold,
         color = Color(0xFF000000)
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EmailField(email: String, onTextFieldChanged: (String) -> Unit) {
-    TextField(
-        value = email,
-        onValueChange = { onTextFieldChanged(it) },
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Email") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        singleLine = true,
-        maxLines = 1,
-        colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-        )
     )
 }
 

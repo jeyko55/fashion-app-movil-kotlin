@@ -11,5 +11,5 @@ import com.example.fashion_app_movil_kotlin.database.user.UserDAO
 )
 
 abstract class FashionAppDatabase: RoomDatabase() {
-    abstract val dao: UserDAO
+    abstract val userDao: UserDAO
 }

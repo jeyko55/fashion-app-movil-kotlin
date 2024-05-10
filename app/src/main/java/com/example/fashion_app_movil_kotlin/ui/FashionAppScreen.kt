@@ -35,9 +35,6 @@ fun FashionAppBottonBar() {
 
 @Composable
 fun FashionApp(
-    loginViewModel: LoginViewModel = viewModel(),
-    registerViewModel: RegisterViewModel = viewModel(),
-
     userViewModel: UserViewModel = viewModel(),
 
     navController: NavHostController = rememberNavController()
@@ -53,8 +50,6 @@ fun FashionApp(
         builder = {
             composable(route = Routes.LOGINREGISTER_SCREEN) {
                 LoginRegisterScreen(
-                    loginViewModel = loginViewModel,
-                    registerViewModel = registerViewModel,
                     userViewModel = userViewModel,
                     onLoginSelected = {
                         navController.navigate(Routes.LOGIN_SCREEN)
@@ -66,13 +61,20 @@ fun FashionApp(
             }
             composable(route = Routes.LOGIN_SCREEN) {
                 LoginScreen(
-                    loginViewModel = loginViewModel,
-                    onEvent = loginViewModel::onEvent,
-                    onEve
-                    )
+                    userViewModel = userViewModel,
+                    onEvent = userViewModel::onEvent,
+                    onUserValidNav = { // FALTA IMPLEMENTAR ESTA FUNCIÓN PARA CUANDO EL USUARIO SE VALIDE CORRECTAMENTE EN LOGINSCREEN
+                        navController.navigate(Routes.HOME_SCREEN)
+                    }
+                )
             }
             composable(route = Routes.REGISTER_SCREEN) {
-                RegisterScreen(RegisterViewModel(), navController)
+                RegisterScreen(
+                    userViewModel = userViewModel,
+                    onEvent = userViewModel::onEvent,
+                    onUserCreatedNav = {
+                        navController.navigate((Routes.LOGINREGISTER_SCREEN))
+                    })
             }
         }
     )

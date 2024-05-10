@@ -1,5 +1,6 @@
 package com.example.fashion_app_movil_kotlin.view_models
 
+import android.util.Patterns
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,7 +38,7 @@ class UserViewModel(
                 }
             }
 
-            UserEvent.SaveUser -> {
+            is UserEvent.SaveUser -> {
                 val name = state.value.name
                 val email = state.value.email
                 val phoneNumber = state.value.phoneNumber
@@ -94,7 +95,36 @@ class UserViewModel(
                     )
                 }
             }
+
+            is UserEvent.ValidateUser -> {
+                val email = state.value.email
+                val password = state.value.password
+
+                viewModelScope.launch {
+                    // Check if user exists with email
+                    val user = dao.getUserByEmail(email)
+                    if (user != null) {
+                        // User exists, check password
+                        if (user.password == password) {
+                            // Login successful
+                            _state.update { it.copy(isLoggedIn = true) }
+                        } else {
+                            // Update UI with invalid password error
+                            _state.update { it.copy(isPasswordValid = false) }
+                        }
+                    } else {
+                        // User doesn't exist, update UI with invalid email error (optional)
+                        // You might choose a different message depending on your app's logic
+                        _state.update { it.copy(isEmailValid = false) }
+                    }
+                }
+            }
+
+            is UserEvent.SetConfirmPassword -> {
+
+            }
         }
     }
 }
+
 
