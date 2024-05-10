@@ -19,10 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.fashion_app_movil_kotlin.states.UserState
-import com.example.fashion_app_movil_kotlin.view_models.LoginViewModel
-import com.example.fashion_app_movil_kotlin.view_models.RegisterViewModel
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 
 @Composable

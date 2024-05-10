@@ -1,6 +1,5 @@
 package com.example.fashion_app_movil_kotlin.ui
 
-import android.window.SplashScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -9,8 +8,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.fashion_app_movil_kotlin.view_models.LoginViewModel
-import com.example.fashion_app_movil_kotlin.view_models.RegisterViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.fashion_app_movil_kotlin.ui.login_register.Routes
 import com.example.fashion_app_movil_kotlin.ui.login_register.LoginRegisterScreen
