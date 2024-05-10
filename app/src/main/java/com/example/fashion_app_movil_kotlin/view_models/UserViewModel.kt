@@ -119,9 +119,12 @@ class UserViewModel(
                     }
                 }
             }
-
             is UserEvent.SetConfirmPassword -> {
-
+                _state.update {
+                    it.copy(
+                        confirmPassword = event.confirmPassword
+                    )
+                }
             }
         }
     }
