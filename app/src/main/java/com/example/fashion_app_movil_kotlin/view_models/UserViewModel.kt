@@ -39,10 +39,10 @@ class UserViewModel(
             }
 
             is UserEvent.SaveUser -> {
-                val name = state.value.name
-                val email = state.value.email
-                val phoneNumber = state.value.phoneNumber
-                val password = state.value.password
+                val name = _state.value.name
+                val email = _state.value.email
+                val phoneNumber = _state.value.phoneNumber
+                val password = _state.value.password
 
                 val user = User(
                     name = name,
@@ -75,7 +75,7 @@ class UserViewModel(
             is UserEvent.SetEmail -> {
                 _state.update {
                     it.copy(
-                        name = event.email
+                        email = event.email
                     )
                 }
             }
@@ -83,7 +83,7 @@ class UserViewModel(
             is UserEvent.SetPhoneNumber -> {
                 _state.update {
                     it.copy(
-                        name = event.phoneNumber
+                        phoneNumber = event.phoneNumber
                     )
                 }
             }
@@ -91,7 +91,7 @@ class UserViewModel(
             is UserEvent.SetPassword -> {
                 _state.update {
                     it.copy(
-                        name = event.password
+                        password = event.password
                     )
                 }
             }

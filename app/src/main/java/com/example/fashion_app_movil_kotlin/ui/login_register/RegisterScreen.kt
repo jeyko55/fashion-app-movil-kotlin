@@ -90,6 +90,7 @@ fun RegisterPortrait(
         Spacer(modifier = Modifier.padding(4.dp))
 
         TextField(
+            // Name TextField
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(text = "Nombre completo") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -107,22 +108,6 @@ fun RegisterPortrait(
 
         Spacer(modifier = Modifier.padding(4.dp))
 
-        TextField(
-            // Name TextField
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(text = "Nombre completo") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            singleLine = true,
-            maxLines = 1,
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
-            value = state.name,
-            onValueChange = {
-                onEvent(UserEvent.SetName(it))
-            },
-        )
         TextField(
             // Email TextField
             modifier = Modifier.fillMaxWidth(),
