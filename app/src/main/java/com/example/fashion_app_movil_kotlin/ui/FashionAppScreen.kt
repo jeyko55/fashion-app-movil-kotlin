@@ -1,5 +1,6 @@
 package com.example.fashion_app_movil_kotlin.ui
 
+import android.provider.Telephony.Mms.Addr
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.fashion_app_movil_kotlin.R
+import com.example.fashion_app_movil_kotlin.ui.home.AddClothingScreen
 import com.example.fashion_app_movil_kotlin.ui.home.ClosetScreen
 import com.example.fashion_app_movil_kotlin.ui.login_register.LoginRegisterScreen
 import com.example.fashion_app_movil_kotlin.ui.login_register.LoginScreen
@@ -77,11 +79,150 @@ fun FashionApp(
                     userViewModel = userViewModel,
                     onEvent = userViewModel::onEvent,
                     onUserValidNav = {
-                        navController.navigate(Routes.HOME_SCREEN)
+                        navController.navigate(Routes.CLOSET_SCREEN)
                     }
                 )
             }
-            composable(route = Routes.HOME_SCREEN) {
+            composable(route = Routes.CLOSET_SCREEN) {
+                ClosetScreen(
+                    userViewModel = userViewModel,
+                    // Toca mirar cómo manejar los events y states para las imágenes
+
+                    // BottomBar
+                    onClosetSelected = {
+                        navController.navigate((Routes.CLOSET_SCREEN))
+                    },
+                    onCombinationsSelected = {
+                        navController.navigate((Routes.COMBINATIONS_SCREEN))
+                    },
+                    onCalendarSelected = {
+                        navController.navigate((Routes.CALENDAR_SCREEN))
+                    },
+                    onArchivedSelected = {
+                        navController.navigate((Routes.ARCHIVED_SCREEN))
+                    },
+                    onProfileSelected = {
+                        navController.navigate((Routes.PROFILE_SCREEN))
+                    },
+                    // Add button
+                    onAddClothingSelected = {
+                        navController.navigate((Routes.ADD_CLOTHING_SCREEN))
+                    },
+                )
+            }
+            composable(route = Routes.ADD_CLOTHING_SCREEN) {
+                AddClothingScreen(
+                    userViewModel = userViewModel,
+                    // Toca mirar cómo manejar los events y states para las imágenes
+
+                    // BottomBar
+                    onClosetSelected = {
+                        navController.navigate((Routes.CLOSET_SCREEN))
+                    },
+                    onCombinationsSelected = {
+                        navController.navigate((Routes.COMBINATIONS_SCREEN))
+                    },
+                    onCalendarSelected = {
+                        navController.navigate((Routes.CALENDAR_SCREEN))
+                    },
+                    onArchivedSelected = {
+                        navController.navigate((Routes.ARCHIVED_SCREEN))
+                    },
+                    onProfileSelected = {
+                        navController.navigate((Routes.PROFILE_SCREEN))
+                    },
+                    // Add button
+                    onAddClothingSelected = {
+                        navController.navigate((Routes.ADD_CLOTHING_SCREEN))
+                    },
+
+                    onAddItemSelected = {
+                        navController.navigate((Routes.CLOSET_SCREEN))
+                    },
+                )
+            }
+            composable(route = Routes.CLOSET_SCREEN) {
+                ClosetScreen(
+                    userViewModel = userViewModel,
+                    // Toca mirar cómo manejar los events y states para las imágenes
+
+                    // BottomBar
+                    onClosetSelected = {
+                        navController.navigate((Routes.CLOSET_SCREEN))
+                    },
+                    onCombinationsSelected = {
+                        navController.navigate((Routes.COMBINATIONS_SCREEN))
+                    },
+                    onCalendarSelected = {
+                        navController.navigate((Routes.CALENDAR_SCREEN))
+                    },
+                    onArchivedSelected = {
+                        navController.navigate((Routes.ARCHIVED_SCREEN))
+                    },
+                    onProfileSelected = {
+                        navController.navigate((Routes.PROFILE_SCREEN))
+                    },
+                    // Add button
+                    onAddClothingSelected = {
+                        navController.navigate((Routes.ADD_CLOTHING_SCREEN))
+                    },
+                )
+            }
+            composable(route = Routes.CLOSET_SCREEN) {
+                ClosetScreen(
+                    userViewModel = userViewModel,
+                    // Toca mirar cómo manejar los events y states para las imágenes
+
+                    // BottomBar
+                    onClosetSelected = {
+                        navController.navigate((Routes.CLOSET_SCREEN))
+                    },
+                    onCombinationsSelected = {
+                        navController.navigate((Routes.COMBINATIONS_SCREEN))
+                    },
+                    onCalendarSelected = {
+                        navController.navigate((Routes.CALENDAR_SCREEN))
+                    },
+                    onArchivedSelected = {
+                        navController.navigate((Routes.ARCHIVED_SCREEN))
+                    },
+                    onProfileSelected = {
+                        navController.navigate((Routes.PROFILE_SCREEN))
+                    },
+                    // Add button
+                    onAddClothingSelected = {
+                        navController.navigate((Routes.ADD_CLOTHING_SCREEN))
+                    },
+                )
+            }
+            composable(route = Routes.CLOSET_SCREEN) {
+                ClosetScreen(
+                    userViewModel = userViewModel,
+                    // Toca mirar cómo manejar los events y states para las imágenes
+
+                    // BottomBar
+                    onClosetSelected = {
+                        navController.navigate((Routes.CLOSET_SCREEN))
+                    },
+                    onCombinationsSelected = {
+                        navController.navigate((Routes.COMBINATIONS_SCREEN))
+                    },
+                    onCalendarSelected = {
+                        navController.navigate((Routes.CALENDAR_SCREEN))
+                    },
+                    onArchivedSelected = {
+                        navController.navigate((Routes.ARCHIVED_SCREEN))
+                    },
+                    onProfileSelected = {
+                        navController.navigate((Routes.PROFILE_SCREEN))
+                    },
+                    // Add button
+                    onAddClothingSelected = {
+                        navController.navigate((Routes.ADD_CLOTHING_SCREEN))
+                    },
+                )
+            }
+            composable(route = Routes.CLOSET_SCREEN) {
                 ClosetScreen(
                     userViewModel = userViewModel,
                     // Toca mirar cómo manejar los events y states para las imágenes

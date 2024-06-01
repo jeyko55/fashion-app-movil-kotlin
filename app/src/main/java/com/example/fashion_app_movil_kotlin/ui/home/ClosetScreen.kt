@@ -55,24 +55,18 @@ fun ClosetScreen(
     ) {
     val userState by userViewModel.state.collectAsState()
 
-    Box(
-        Modifier
-            .fillMaxSize()
-
-    ) {
-        Box {
-            ClosetPortrait(
-                modifier = Modifier,
-                userState,
-                onClosetSelected,
-                onCombinationsSelected,
-                onCalendarSelected,
-                onArchivedSelected,
-                onProfileSelected,
-                onAddClothingSelected,
-            )
-        }
-
+    Box (
+        Modifier.fillMaxSize()){
+        ClosetPortrait(
+            modifier = Modifier,
+            userState,
+            onClosetSelected,
+            onCombinationsSelected,
+            onCalendarSelected,
+            onArchivedSelected,
+            onProfileSelected,
+            onAddClothingSelected,
+        )
     }
 }
 
@@ -120,16 +114,13 @@ fun ClosetPortrait(
                 )
             }
             FloatingActionButton(
-                onClick = onAddClothingSelected, // Replace with your FAB action
+                onClick = onAddClothingSelected,
                 modifier = Modifier
                     .padding(16.dp) // Add padding around FAB
                     .align(Alignment.BottomEnd) // Position FAB bottom-right
             ) {
                 Icon(imageVector = Icons.Filled.AddCircle, contentDescription = "Add Clothing")
             }
-
-
-
         }
     }
 }

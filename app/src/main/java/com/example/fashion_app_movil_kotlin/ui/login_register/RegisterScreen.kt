@@ -57,7 +57,6 @@ fun RegisterScreen(
                 onUserCreatedNav
             )
         }
-
     }
 }
 
@@ -68,7 +67,6 @@ fun RegisterPortrait(
     onEvent: (UserEvent) -> Unit,
     onUserCreatedNav: () -> Unit
 ) {
-
     Column(
         modifier = modifier
             .fillMaxWidth() // Occupy full width
@@ -183,7 +181,6 @@ fun RegisterPortrait(
 
         Spacer(modifier = Modifier.padding(8.dp))
 
-
         Button(
             modifier = Modifier
                 .fillMaxWidth()
@@ -204,7 +201,6 @@ fun RegisterPortrait(
 
         Spacer(modifier = Modifier.padding(4.dp))
         ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
-
     }
 }
 
