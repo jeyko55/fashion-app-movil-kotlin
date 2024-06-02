@@ -9,11 +9,10 @@ import com.example.fashion_app_movil_kotlin.database.user.UserDAO
 
 @Database(
     entities = [User::class, Item::class],
-    version = 2, exportSchema = false
+    version = 1
 )
 
 abstract class FashionAppDatabase: RoomDatabase() {
     abstract val userDao: UserDAO
     abstract val itemDao: ItemDAO
-
 }
