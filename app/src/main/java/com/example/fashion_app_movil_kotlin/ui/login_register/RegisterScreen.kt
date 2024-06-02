@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -19,8 +18,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,8 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.states.UserState
+import com.example.fashion_app_movil_kotlin.ui.BackgroundImage
+import com.example.fashion_app_movil_kotlin.ui.ForgotPassword
+import com.example.fashion_app_movil_kotlin.ui.HeaderImage
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -49,6 +48,7 @@ fun RegisterScreen(
 
     ) {
         BackgroundImage(Modifier.fillMaxSize())
+
         Box {
             RegisterPortrait(
                 Modifier.align(Alignment.Center),
@@ -63,7 +63,7 @@ fun RegisterScreen(
 @Composable
 fun RegisterPortrait(
     modifier: Modifier,
-    state: UserState,
+    userState: UserState,
     onEvent: (UserEvent) -> Unit,
     onUserCreatedNav: () -> Unit
 ) {
@@ -98,7 +98,7 @@ fun RegisterPortrait(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
             ),
-            value = state.name,
+            value = userState.name,
             onValueChange = {
                 onEvent(UserEvent.SetName(it))
             },
@@ -117,7 +117,7 @@ fun RegisterPortrait(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
             ),
-            value = state.email,
+            value = userState.email,
             onValueChange = {
                 onEvent(UserEvent.SetEmail(it))
             },
@@ -135,7 +135,7 @@ fun RegisterPortrait(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
             ),
-            value = state.phoneNumber,
+            value = userState.phoneNumber,
             onValueChange = {
                 onEvent(UserEvent.SetPhoneNumber(it))
             }
@@ -154,7 +154,7 @@ fun RegisterPortrait(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
-            value = state.password,
+            value = userState.password,
             onValueChange = {
                 onEvent(UserEvent.SetPassword(it))
             }
@@ -173,7 +173,7 @@ fun RegisterPortrait(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
             ),
-            value = state.confirmPassword,
+            value = userState.confirmPassword,
             onValueChange = {
                 onEvent(UserEvent.SetConfirmPassword(it))
             },
@@ -194,12 +194,13 @@ fun RegisterPortrait(
                 onEvent(UserEvent.SaveUser)
                 onUserCreatedNav()
             },
-            enabled = isRegisterValid(state),
+            enabled = isRegisterValid(userState),
         ) {
             Text(text = "Registrarse")
         }
 
         Spacer(modifier = Modifier.padding(4.dp))
+
         ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
     }
 }

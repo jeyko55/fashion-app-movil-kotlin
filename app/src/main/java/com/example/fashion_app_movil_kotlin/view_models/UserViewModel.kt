@@ -1,13 +1,14 @@
 package com.example.fashion_app_movil_kotlin.view_models
 
-import android.util.Patterns
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.RoomDatabase
+import com.example.fashion_app_movil_kotlin.database.FashionAppDatabase
 import com.example.fashion_app_movil_kotlin.database.user.User
 import com.example.fashion_app_movil_kotlin.database.user.UserDAO
 import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.states.UserState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -28,7 +29,6 @@ class UserViewModel(
             users = users
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UserState())
-
 
     fun onEvent(event: UserEvent) {
         when (event) {
@@ -51,7 +51,7 @@ class UserViewModel(
                     password = password
                 )
                 viewModelScope.launch {
-                    dao.upserttUser(user)
+                    dao.upsertUser(user)
                 }
                 _state.update {
                     it.copy(
@@ -119,6 +119,7 @@ class UserViewModel(
                     }
                 }
             }
+
             is UserEvent.SetConfirmPassword -> {
                 _state.update {
                     it.copy(

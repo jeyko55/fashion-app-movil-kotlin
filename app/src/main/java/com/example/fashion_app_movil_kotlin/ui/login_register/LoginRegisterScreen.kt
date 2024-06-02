@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.fashion_app_movil_kotlin.states.UserState
+import com.example.fashion_app_movil_kotlin.ui.BackgroundImage
+import com.example.fashion_app_movil_kotlin.ui.HeaderImage
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 
 @Composable
@@ -36,7 +38,8 @@ fun LoginRegisterScreen(
             .fillMaxSize()
 
     ) {
-        BackgroundImage(Modifier.fillMaxSize())
+        BackgroundImage(modifier = Modifier)
+
         Box {
             LoginRegisterPortrait(
                 modifier = Modifier,
@@ -45,7 +48,6 @@ fun LoginRegisterScreen(
                 onRegisterSelected
             )
         }
-
     }
 }
 
@@ -83,7 +85,7 @@ fun LoginRegisterPortrait(
             Text(text = "Iniciar sesión")
         }
 
-        Spacer(modifier = Modifier.padding(4.dp))
+        Spacer(modifier = Modifier.padding(6.dp))
 
         Button( // Register Button
             modifier = Modifier

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface UserDAO {
     @Upsert //mix between @Insert and @Update
-    suspend fun upserttUser(user: User)
+    suspend fun upsertUser(user: User)
 
     @Delete
     suspend fun deleteUser(user: User)
@@ -19,4 +19,6 @@ interface UserDAO {
 
     @Query("SELECT * FROM user WHERE email = :email")
     suspend fun getUserByEmail(email: String): User?
+    @Query("DELETE FROM user")
+    suspend fun clearAllTables()
 }

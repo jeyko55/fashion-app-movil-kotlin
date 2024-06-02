@@ -31,6 +31,9 @@ import androidx.compose.ui.unit.sp
 import com.example.fashion_app_movil_kotlin.R
 import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.states.UserState
+import com.example.fashion_app_movil_kotlin.ui.BackgroundImage
+import com.example.fashion_app_movil_kotlin.ui.ForgotPassword
+import com.example.fashion_app_movil_kotlin.ui.HeaderImage
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 
 @Composable
@@ -57,17 +60,6 @@ fun LoginScreen(
         }
     }
 }
-
-@Composable
-fun BackgroundImage(modifier: Modifier) {
-    Image(
-        painter = painterResource(id = R.drawable.image_6), // Replace with your image resource
-        contentDescription = "Background",
-        modifier = modifier
-            .fillMaxSize() // Cover the entire screen
-    )
-}
-
 @Composable
 fun LoginPortrait(
     modifier: Modifier,
@@ -161,24 +153,3 @@ fun LoginPortrait(
     }
 }
 
-@Composable
-fun ForgotPassword(modifier: Modifier) {
-    Text(
-        text = "¿Olvidaste la contraseña?",
-        modifier = modifier.clickable { },
-        fontSize = 12.sp,
-        fontWeight = FontWeight.Bold,
-        color = Color(0xFF000000)
-    )
-}
-
-@Composable
-fun HeaderImage(modifier: Modifier) {
-    Image(
-        painter = painterResource(id = R.drawable.logo_fashionapp),
-        contentDescription = "Header",
-        modifier = modifier
-            .fillMaxWidth()
-            .height(200.dp)
-    )
-}

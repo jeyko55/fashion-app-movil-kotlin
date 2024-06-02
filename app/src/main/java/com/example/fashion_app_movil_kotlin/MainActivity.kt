@@ -10,7 +10,10 @@ import androidx.room.Room
 import com.example.fashion_app_movil_kotlin.database.FashionAppDatabase
 import com.example.fashion_app_movil_kotlin.ui.FashionApp
 import com.example.fashion_app_movil_kotlin.ui.theme.FashionappmovilkotlinTheme
+import com.example.fashion_app_movil_kotlin.view_models.ItemViewModel
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
+import kotlinx.coroutines.*
+
 
 
 class MainActivity : ComponentActivity() {
@@ -32,13 +35,23 @@ class MainActivity : ComponentActivity() {
             }
         }
     )
+    val itemViewModel by viewModels<ItemViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory{
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return ItemViewModel(db.itemDao) as T
+                }
+            }
+        }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             FashionappmovilkotlinTheme {
                 FashionApp(
-                    userViewModel = userViewModel
+                    userViewModel = userViewModel,
+                    itemViewModel = itemViewModel
                 )
             }
         }
