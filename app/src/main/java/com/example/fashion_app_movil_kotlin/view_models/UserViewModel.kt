@@ -2,13 +2,10 @@ package com.example.fashion_app_movil_kotlin.view_models
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.RoomDatabase
-import com.example.fashion_app_movil_kotlin.database.FashionAppDatabase
 import com.example.fashion_app_movil_kotlin.database.user.User
 import com.example.fashion_app_movil_kotlin.database.user.UserDAO
 import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.states.UserState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -75,7 +72,9 @@ class UserViewModel(
             is UserEvent.SetEmail -> {
                 _state.update {
                     it.copy(
-                        email = event.email
+                        email = event.email,
+                        isEmailValid = true, // Reset email validation state
+                        showUserNotFoundError = false, // Reset user not found error
                     )
                 }
             }
@@ -91,7 +90,9 @@ class UserViewModel(
             is UserEvent.SetPassword -> {
                 _state.update {
                     it.copy(
-                        password = event.password
+                        password = event.password,
+                        isPasswordValid = true, // Reset password validation state
+                        showPasswordError = false // Reset password error
                     )
                 }
             }
@@ -110,12 +111,22 @@ class UserViewModel(
                             _state.update { it.copy(isLoggedIn = true) }
                         } else {
                             // Update UI with invalid password error
-                            _state.update { it.copy(isPasswordValid = false) }
+                            _state.update {
+                                it.copy(
+                                    isPasswordValid = false,
+                                    showPasswordError = true // Show password error
+                                )
+                            }
                         }
                     } else {
                         // User doesn't exist, update UI with invalid email error (optional)
                         // You might choose a different message depending on your app's logic
-                        _state.update { it.copy(isEmailValid = false) }
+                        _state.update {
+                            it.copy(
+                                isEmailValid = false,
+                                showUserNotFoundError = true // Show user not found error
+                            )
+                        }
                     }
                 }
             }

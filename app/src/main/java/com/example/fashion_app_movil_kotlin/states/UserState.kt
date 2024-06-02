@@ -12,5 +12,7 @@ data class UserState (
     val isAddingUser: Boolean = false,
     val isLoggedIn: Boolean = false, // Add isLoggedIn property
     val isEmailValid: Boolean = true, // Add isEmailValid property
-    val isPasswordValid: Boolean = true // Add isPasswordValid property
+    val isPasswordValid: Boolean = true, // Add isPasswordValid property
+    val showUserNotFoundError: Boolean = false, // Nueva propiedad
+    val showPasswordError: Boolean = false // Nueva propiedad
 )

@@ -1,7 +1,6 @@
 package com.example.fashion_app_movil_kotlin.ui.login_register
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,20 +20,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.fashion_app_movil_kotlin.R
 import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.states.UserState
 import com.example.fashion_app_movil_kotlin.ui.BackgroundImage
 import com.example.fashion_app_movil_kotlin.ui.ForgotPassword
 import com.example.fashion_app_movil_kotlin.ui.HeaderImage
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun LoginScreen(
@@ -43,6 +41,12 @@ fun LoginScreen(
     onUserValidNav: () -> Unit
 ) {
     val userState by userViewModel.state.collectAsState()
+
+    LaunchedEffect(userState.isLoggedIn) {
+        if (userState.isLoggedIn) {
+            onUserValidNav()
+        }
+    }
 
     Box(
         Modifier
@@ -60,6 +64,7 @@ fun LoginScreen(
         }
     }
 }
+
 @Composable
 fun LoginPortrait(
     modifier: Modifier,
@@ -67,6 +72,25 @@ fun LoginPortrait(
     onEvent: (UserEvent) -> Unit,
     onUserValidNav: () -> Unit
 ) {
+    var showEmailError by remember { mutableStateOf(false) }
+    var showPasswordError by remember { mutableStateOf(false) }
+
+    LaunchedEffect(state.showUserNotFoundError) {
+        if (state.showUserNotFoundError) {
+            showEmailError = true
+            delay(1000)
+            showEmailError = false
+        }
+    }
+
+    LaunchedEffect(state.showPasswordError) {
+        if (state.showPasswordError) {
+            showPasswordError = true
+            delay(1000)
+            showPasswordError = false
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxWidth() // Occupy full width
@@ -104,6 +128,25 @@ fun LoginPortrait(
             isError = !state.isEmailValid // Set error state based on isEmailValid
         )
 
+        if (showEmailError) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .background(Color.Transparent)
+
+            ) {
+                Text(
+                    text = "ERROR: EMAIL NO EXISTE",
+                    color = Color.Red,
+                    modifier = Modifier.align(Alignment.Center),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+        }
+
         Spacer(modifier = Modifier.padding(4.dp))
 
         @OptIn(ExperimentalMaterial3Api::class)
@@ -126,11 +169,29 @@ fun LoginPortrait(
 
         )
 
+        if (showPasswordError) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    text = "ERROR: CONTRASEÑA INCORRECTA",
+                    color = Color.Red,
+                    modifier = Modifier.align(Alignment.Center),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+        }
+
         Spacer(modifier = Modifier.padding(8.dp))
 
         Spacer(modifier = Modifier.padding(16.dp))
 
-        Button( // Login Button
+        Button(
+            // Login Button
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp), // Color similar a las vistas de Figma
@@ -141,14 +202,13 @@ fun LoginPortrait(
             ),
             onClick = {
                 onEvent(UserEvent.ValidateUser)
-                onUserValidNav()
             },
         ) {
             Text(text = "Iniciar sesión")
         }
-        
+
         Spacer(modifier = Modifier.padding(4.dp))
-        
+
         ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
     }
 }
