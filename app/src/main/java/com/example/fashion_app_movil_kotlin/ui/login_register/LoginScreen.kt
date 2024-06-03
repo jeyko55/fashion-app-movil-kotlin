@@ -28,11 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.states.UserState
-import com.example.fashion_app_movil_kotlin.ui.BackgroundImage
-import com.example.fashion_app_movil_kotlin.ui.ForgotPassword
-import com.example.fashion_app_movil_kotlin.ui.HeaderImage
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 import kotlinx.coroutines.delay
+import com.example.fashion_app_movil_kotlin.ui.components.*
 
 @Composable
 fun LoginScreen(

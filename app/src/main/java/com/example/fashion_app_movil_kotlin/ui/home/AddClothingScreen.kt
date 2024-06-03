@@ -13,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,11 +48,10 @@ import androidx.compose.ui.unit.sp
 import com.example.fashion_app_movil_kotlin.R
 import com.example.fashion_app_movil_kotlin.events.ItemEvent
 import com.example.fashion_app_movil_kotlin.states.ItemState
-import com.example.fashion_app_movil_kotlin.ui.FashionAppBottomBar
-import com.example.fashion_app_movil_kotlin.ui.TopAppBarImage
 import com.example.fashion_app_movil_kotlin.view_models.ItemViewModel
 import coil.compose.rememberImagePainter
 import coil.load
+import com.example.fashion_app_movil_kotlin.ui.components.*
 
 @Composable
 fun AddClothingScreen(
@@ -158,7 +158,7 @@ fun AddClothingPortrait(
             ) {
                 Box(
                     modifier = Modifier
-                        .height(100.dp)
+                        .height(90.dp)
                         .fillMaxWidth()
                         .padding(8.dp)
                         .background(
@@ -175,39 +175,40 @@ fun AddClothingPortrait(
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    // Display the selected image if it's available
-                    if (itemState.imagePath.isNotBlank()) {
-                        Image(
-                            painter = rememberImagePainter(itemState.imagePath),
-                            contentDescription = "Selected Clothing Image",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(600.dp)
-                        )
-                    } else {
-                        // Display the default placeholder image if no image is selected
-                        Image(
-                            painter = painterResource(id = R.drawable.gallery_image),
-                            contentDescription = "Add Clothing Image",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(50.dp),
-                            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.2f))
-                        )
-                    }
+                    // Display the default placeholder image if no image is selected
+                    Image(
+                        painter = painterResource(id = R.drawable.gallery_image),
+                        contentDescription = "Add Clothing Image",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.2f))
+                    )
                 } // End of Box 1
 
-                Text(
-                    text = "img: ${itemState.imagePath}",
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(8.dp)
-                )
+                // Display the selected image if it's available
+                if (itemState.imagePath.isNotBlank()) {
+                    Image(
+                        painter = rememberImagePainter(itemState.imagePath),
+                        contentDescription = "Selected Clothing Image",
+                        modifier = Modifier
+                            .height(100.dp)
+                            .width(100.dp)
+                    )
+                } else {
+                    // Display the default placeholder image if no image is selected
+                    Image(
+                        painter = painterResource(id = R.drawable.null_pointer_symbol),
+                        contentDescription = "Add Clothing Image",
+                        modifier = Modifier
+                            .height(100.dp)
+                            .width(100.dp)
+                    )
+                }
 
-                Box( // Bos for getting the clothing type
+                Box( // Box for getting the clothing type
                     modifier = Modifier
-                        .height(100.dp)
+                        .height(90.dp)
                         .fillMaxWidth()
                         .padding(8.dp)
                         .background(Color.LightGray, RoundedCornerShape(16.dp)),
@@ -268,29 +269,95 @@ fun AddClothingPortrait(
                             }
                         }
                     }
-                } // End of Box 2
+                } // End of Box for getting the clothing type
 
-                Spacer(modifier = Modifier.padding(16.dp))
+                Spacer(modifier = Modifier.padding(4.dp))
 
                 Box( // Box for getting the color
                     modifier = Modifier
-                        .height(100.dp)
+                        .height(90.dp)
                         .fillMaxWidth()
                         .padding(8.dp)
                         .background(Color.LightGray, RoundedCornerShape(16.dp)),
                     contentAlignment = Alignment.Center
                 ) {
+                    // Color dropdown menu
+                    var expanded by remember { mutableStateOf(false) }
+                    var selectedColorText by remember { mutableStateOf("") }
+                    val colors = listOf(
+                        "Rojo",
+                        "Azul",
+                        "Verde",
+                        "Naranja",
+                        "Amarillo",
+                        "Rosado",
+                        "Negro",
+                        "Blanco",
+                        "Gris"
+                    )
 
-                } // End Box 3
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = {
+                            expanded = !expanded
+                        }
+                    ) {
+                        OutlinedTextField(
+                            value = selectedColorText,
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Color") },
+                            trailingIcon = {
+                                androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon(
+                                    expanded = expanded
+                                )
+                            },
+                            colors = TextFieldDefaults.textFieldColors(
+                                containerColor = Color.LightGray,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            modifier = Modifier
+                                .menuAnchor()
+                                .fillMaxWidth()
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = {
+                                expanded = false
+                            },
+                            modifier = Modifier
+                                .background(
+                                    Color.LightGray,
+                                    shape = RoundedCornerShape(
+                                        bottomEnd = 16.dp,
+                                        bottomStart = 16.dp
+                                    )
+                                )
+                        ) {
+                            colors.forEach { color ->
+                                androidx.compose.material3.DropdownMenuItem(
+                                    text = { Text(color) },
+                                    onClick = {
+                                        selectedColorText = color
+                                        expanded = false
+                                        onEvent(ItemEvent.SetColor(color)) // Actualiza el color en el estado
+                                    }
+                                )
+                            }
+                        }
+                    }
+                } // End of Box for getting the color
 
-                Spacer(modifier = Modifier.padding(26.dp))
+                Spacer(modifier = Modifier.padding(20.dp))
 
                 Button(
                     // 'Agregar prenda' Button
                     modifier = Modifier
-                        .width(250.dp)
-                        .height(48.dp), // Color similar a las vistas de Figma
+                        .height(50.dp)
+                        .width(250.dp),
                     colors = ButtonDefaults.buttonColors(
+// Color similar a las vistas de Figma
                         disabledContentColor = Color.White,
                         contentColor = Color.White,
                         containerColor = Color(0xFF03A9F4),
@@ -309,7 +376,7 @@ fun AddClothingPortrait(
 }
 
 fun isItemValid(state: ItemState): Boolean {
-    return state.imagePath != null
+    return state.imagePath.isNotBlank()
             && state.clothingType.isNotBlank()
             && state.color.isNotBlank()
 }

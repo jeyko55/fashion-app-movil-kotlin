@@ -1,14 +1,17 @@
 package com.example.fashion_app_movil_kotlin.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
@@ -264,127 +267,7 @@ fun FashionApp(
     )
 }
 
-@Composable
-fun BackgroundImage(modifier: Modifier) {
-    Image(
-        painter = painterResource(id = R.drawable.background_image), // Replace with your image resource
-        contentDescription = "Background",
-        modifier = modifier
-            .fillMaxSize() // Cover the entire screen
-    )
-}
 
-@Composable
-fun HeaderImage(modifier: Modifier) {
-    Image(
-        painter = painterResource(id = R.drawable.logo_fashionapp),
-        contentDescription = "Header",
-        modifier = modifier
-            .fillMaxWidth()
-            .height(200.dp)
-    )
-}
 
-@Composable
-fun ForgotPassword(modifier: Modifier) {
-    Text(
-        text = "¿Olvidaste la contraseña?",
-        modifier = modifier.clickable { },
-        fontSize = 12.sp,
-        fontWeight = FontWeight.Bold,
-        color = Color(0xFF000000)
-    )
-}
 
-@Composable
-fun TopAppBarImage(modifier: Modifier) {
-    Image(
-        painter = painterResource(id = R.drawable.top_bar_header),
-        contentDescription = "Header",
-        modifier = modifier
-            .fillMaxWidth()
-            .height(133.dp)
-    )
-}
 
-@Composable
-fun FashionAppBottomBar(
-    modifier: Modifier = Modifier,
-    onClosetSelected: () -> Unit,
-    onCombinationsSelected: () -> Unit,
-    onCalendarSelected: () -> Unit,
-    onArchivedSelected: () -> Unit,
-    onProfileSelected: () -> Unit,
-    onAddClothingSelected: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        IconButton( // Closet Button
-            onClick = {
-                onClosetSelected()
-            }
-        ) {
-            Icon(
-                Icons.Default.Home,
-                contentDescription = "Closet button"
-            )
-        }
-
-        Spacer(modifier = Modifier.padding(8.dp))
-
-        IconButton( // Combinations Button
-            onClick = {
-                onCombinationsSelected()
-            }
-        ) {
-            Icon(
-                Icons.Default.FavoriteBorder,
-                contentDescription = "Combinations button"
-            )
-        }
-
-        Spacer(modifier = Modifier.padding(8.dp))
-
-        IconButton( // Calendar Button
-            onClick = {
-                onCalendarSelected()
-            }
-        ) {
-            Icon(
-                Icons.Default.DateRange,
-                contentDescription = "Calendar button"
-            )
-        }
-
-        Spacer(modifier = Modifier.padding(8.dp))
-
-        IconButton( // Archived Button
-            onClick = {
-                onArchivedSelected()
-            }
-        ) {
-            Icon(
-                Icons.Default.Delete,
-                contentDescription = "Archived button"
-            )
-        }
-
-        Spacer(modifier = Modifier.padding(8.dp))
-
-        IconButton( // Profile Button
-            onClick = {
-                onProfileSelected()
-            }
-        ) {
-            Icon(
-                Icons.Default.Person,
-                contentDescription = "Profile button"
-            )
-        }
-    }
-
-}

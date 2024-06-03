@@ -34,9 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fashion_app_movil_kotlin.R
 import com.example.fashion_app_movil_kotlin.states.UserState
-import com.example.fashion_app_movil_kotlin.ui.FashionAppBottomBar
-import com.example.fashion_app_movil_kotlin.ui.TopAppBarImage
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
+import com.example.fashion_app_movil_kotlin.ui.components.*
 
 @Composable
 fun ClosetScreen(

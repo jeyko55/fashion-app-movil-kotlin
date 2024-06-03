@@ -20,9 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.fashion_app_movil_kotlin.states.UserState
-import com.example.fashion_app_movil_kotlin.ui.BackgroundImage
-import com.example.fashion_app_movil_kotlin.ui.HeaderImage
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
+import com.example.fashion_app_movil_kotlin.ui.components.*
 
 @Composable
 fun LoginRegisterScreen(
