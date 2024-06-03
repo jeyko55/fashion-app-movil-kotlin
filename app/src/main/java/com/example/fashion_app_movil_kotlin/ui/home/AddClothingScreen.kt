@@ -51,7 +51,9 @@ import com.example.fashion_app_movil_kotlin.states.ItemState
 import com.example.fashion_app_movil_kotlin.view_models.ItemViewModel
 import coil.compose.rememberImagePainter
 import coil.load
+import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.ui.components.*
+import java.util.Objects
 
 @Composable
 fun AddClothingScreen(
@@ -263,6 +265,7 @@ fun AddClothingPortrait(
                                     text = { Text(selectionOption) },
                                     onClick = {
                                         selectedOptionText = selectionOption
+                                        onEvent(ItemEvent.SetClothingType(selectionOption))
                                         expanded = false
                                     }
                                 )
@@ -356,14 +359,15 @@ fun AddClothingPortrait(
                     modifier = Modifier
                         .height(50.dp)
                         .width(250.dp),
+                    // Color similar a las vistas de Figma
                     colors = ButtonDefaults.buttonColors(
-// Color similar a las vistas de Figma
                         disabledContentColor = Color.White,
                         contentColor = Color.White,
                         containerColor = Color(0xFF03A9F4),
                     ),
                     onClick = {
-                        onEvent(ItemEvent.SaveItem) // FALTA HACER
+                        onEvent(ItemEvent.SaveItem)
+                        restartState(onEvent) // Pone los campos en blanco
                         onItemCreatedNav()
                     },
                     enabled = isItemValid(itemState), // FALTA HACER
@@ -379,4 +383,10 @@ fun isItemValid(state: ItemState): Boolean {
     return state.imagePath.isNotBlank()
             && state.clothingType.isNotBlank()
             && state.color.isNotBlank()
+}
+
+fun restartState(onEvent: (ItemEvent) -> Unit) {
+    onEvent(ItemEvent.SetImagePath(""))
+    onEvent(ItemEvent.SetClothingType(""))
+    onEvent(ItemEvent.SetColor(""))
 }
