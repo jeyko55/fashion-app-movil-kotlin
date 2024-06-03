@@ -1,6 +1,7 @@
 package com.example.fashion_app_movil_kotlin.states
 
 import android.media.Image
+import android.net.Uri
 import com.example.fashion_app_movil_kotlin.database.item.Item
 
 data class ItemState(

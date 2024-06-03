@@ -1,8 +1,16 @@
 package com.example.fashion_app_movil_kotlin.ui.home
 
-
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.MediaStore
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,14 +38,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.fashion_app_movil_kotlin.R
 import com.example.fashion_app_movil_kotlin.events.ItemEvent
 import com.example.fashion_app_movil_kotlin.states.ItemState
 import com.example.fashion_app_movil_kotlin.ui.FashionAppBottomBar
 import com.example.fashion_app_movil_kotlin.ui.TopAppBarImage
 import com.example.fashion_app_movil_kotlin.view_models.ItemViewModel
+import coil.compose.rememberImagePainter
+import coil.load
 
 @Composable
 fun AddClothingScreen(
@@ -97,6 +112,23 @@ fun AddClothingPortrait(
     onEvent: (ItemEvent) -> Unit,
     onItemCreatedNav: () -> Unit
 ) {
+    val context = LocalContext.current // Get the current context
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts
+            .StartActivityForResult(),
+        onResult = { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                var selectedImageUri = data?.data // Get the selected image URI
+                if (selectedImageUri != null) {
+                    var selectedImage = selectedImageUri.toString()
+                    Log.d("ImagePath", "Saved image path: $selectedImage")
+                    onEvent(ItemEvent.SetImagePath(selectedImage))
+                }
+            }
+        }
+    )
+
     Scaffold(
         topBar = {
             TopAppBarImage(modifier = Modifier)
@@ -129,20 +161,49 @@ fun AddClothingPortrait(
                         .height(100.dp)
                         .fillMaxWidth()
                         .padding(8.dp)
-                        .background(Color.LightGray, RoundedCornerShape(16.dp)),
+                        .background(
+                            Color.LightGray,
+                            RoundedCornerShape(16.dp)
+                        )
+                        .clickable {
+                            val intent = Intent(
+                                Intent.ACTION_PICK,
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                            )
+                            intent.setType("image/*")
+                            launcher.launch(intent)
+                        },
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.gallery_image),
-                        contentDescription = "Add Clothing Image",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.2f)) // Añade un tinte oscuro a la imagen
-                    )
+                    // Display the selected image if it's available
+                    if (itemState.imagePath.isNotBlank()) {
+                        Image(
+                            painter = rememberImagePainter(itemState.imagePath),
+                            contentDescription = "Selected Clothing Image",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(600.dp)
+                        )
+                    } else {
+                        // Display the default placeholder image if no image is selected
+                        Image(
+                            painter = painterResource(id = R.drawable.gallery_image),
+                            contentDescription = "Add Clothing Image",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp),
+                            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.2f))
+                        )
+                    }
                 } // End of Box 1
 
-                Spacer(modifier = Modifier.padding(16.dp))
+                Text(
+                    text = "img: ${itemState.imagePath}",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(8.dp)
+                )
 
                 Box( // Bos for getting the clothing type
                     modifier = Modifier
@@ -222,11 +283,12 @@ fun AddClothingPortrait(
 
                 } // End Box 3
 
-                Spacer(modifier = Modifier.padding(16.dp))
+                Spacer(modifier = Modifier.padding(26.dp))
 
-                Button( // 'Agregar prenda' Button
+                Button(
+                    // 'Agregar prenda' Button
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .width(250.dp)
                         .height(48.dp), // Color similar a las vistas de Figma
                     colors = ButtonDefaults.buttonColors(
                         disabledContentColor = Color.White,
@@ -239,7 +301,7 @@ fun AddClothingPortrait(
                     },
                     enabled = isItemValid(itemState), // FALTA HACER
                 ) {
-                    Text(text = "Registrarse")
+                    Text(text = "Agregar prenda")
                 } // End 'Agregar prenda' Button
             }
         }
@@ -247,10 +309,7 @@ fun AddClothingPortrait(
 }
 
 fun isItemValid(state: ItemState): Boolean {
-    return state.imagePath.isNotBlank()
+    return state.imagePath != null
             && state.clothingType.isNotBlank()
             && state.color.isNotBlank()
 }
-
-
-

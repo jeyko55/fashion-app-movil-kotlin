@@ -121,8 +121,7 @@ fun FashionApp(
             composable(route = Routes.ADD_CLOTHING_SCREEN) {
                 AddClothingScreen(
                     itemViewModel = itemViewModel,
-                    // Toca mirar cómo manejar los events y states para las imágenes
-
+                    onEvent = itemViewModel::onEvent,
                     // BottomBar
                     onClosetSelected = {
                         navController.navigate((Routes.CLOSET_SCREEN))
@@ -148,11 +147,8 @@ fun FashionApp(
                         navController.navigate((Routes.CLOSET_SCREEN))
                     },
 
-                    onEvent = {
-                        // FALTA HACER
-                    },
                     onItemCreatedNav = {
-                        // FALTA HACER
+                        navController.navigate(Routes.CLOSET_SCREEN)
                     }
                 )
             }

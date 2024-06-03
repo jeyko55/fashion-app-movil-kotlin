@@ -1,5 +1,6 @@
 package com.example.fashion_app_movil_kotlin.database.item
 
+import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -11,7 +12,7 @@ data class Item(
     @ColumnInfo(name = "item_id")
     val itemId: Int = 0,
     @ColumnInfo(name = "image")
-    val imagePath: String,
+    val imagePath: String = "",
     @ColumnInfo(name = "clothingType")
     val clothingType: String,
     @ColumnInfo(name = "color")
