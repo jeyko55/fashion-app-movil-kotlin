@@ -50,13 +50,13 @@ import com.example.fashion_app_movil_kotlin.events.ItemEvent
 import com.example.fashion_app_movil_kotlin.states.ItemState
 import com.example.fashion_app_movil_kotlin.view_models.ItemViewModel
 import coil.compose.rememberImagePainter
-import coil.load
 import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.ui.components.*
 import java.util.Objects
 
 @Composable
 fun AddClothingScreen(
+
     itemViewModel: ItemViewModel,
 
     // BottomBar Icons Selections
@@ -147,7 +147,7 @@ fun AddClothingPortrait(
             )
         },
     ) { innerPadding ->
-        Box( // Box for getting the image path
+        Box( // Box for getting the item data
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)

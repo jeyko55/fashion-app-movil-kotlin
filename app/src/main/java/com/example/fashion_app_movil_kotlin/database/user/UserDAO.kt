@@ -19,6 +19,4 @@ interface UserDAO {
 
     @Query("SELECT * FROM user WHERE email = :email")
     suspend fun getUserByEmail(email: String): User?
-    @Query("DELETE FROM user")
-    suspend fun clearAllTables()
 }

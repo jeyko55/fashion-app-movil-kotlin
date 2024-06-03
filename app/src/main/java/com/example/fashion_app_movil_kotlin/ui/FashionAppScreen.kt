@@ -96,7 +96,7 @@ fun FashionApp(
             }
             composable(route = Routes.CLOSET_SCREEN) {
                 ClosetScreen(
-                    userViewModel = userViewModel,
+                    itemViewModel = itemViewModel,
                     // Toca mirar cómo manejar los events y states para las imágenes
 
                     // BottomBar
@@ -157,7 +157,7 @@ fun FashionApp(
             }
             composable(route = Routes.CLOSET_SCREEN) {
                 ClosetScreen(
-                    userViewModel = userViewModel,
+                    itemViewModel = itemViewModel,
                     // Toca mirar cómo manejar los events y states para las imágenes
 
                     // BottomBar
@@ -184,7 +184,7 @@ fun FashionApp(
             }
             composable(route = Routes.CLOSET_SCREEN) {
                 ClosetScreen(
-                    userViewModel = userViewModel,
+                    itemViewModel = itemViewModel,
                     // Toca mirar cómo manejar los events y states para las imágenes
 
                     // BottomBar
@@ -211,7 +211,7 @@ fun FashionApp(
             }
             composable(route = Routes.CLOSET_SCREEN) {
                 ClosetScreen(
-                    userViewModel = userViewModel,
+                    itemViewModel = itemViewModel,
                     // Toca mirar cómo manejar los events y states para las imágenes
 
                     // BottomBar
@@ -238,7 +238,7 @@ fun FashionApp(
             }
             composable(route = Routes.CLOSET_SCREEN) {
                 ClosetScreen(
-                    userViewModel = userViewModel,
+                    itemViewModel = itemViewModel,
                     // Toca mirar cómo manejar los events y states para las imágenes
 
                     // BottomBar

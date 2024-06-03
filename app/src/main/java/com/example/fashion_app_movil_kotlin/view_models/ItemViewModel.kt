@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 class ItemViewModel(
     private val dao: ItemDAO
-) : ViewModel(){
+) : ViewModel() {
 
     private val _items = dao.getAllItems()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -84,5 +84,6 @@ class ItemViewModel(
         }
     }
 }
+
 
 

@@ -1,7 +1,5 @@
 package com.example.fashion_app_movil_kotlin.events
 
-import android.media.Image
-import android.net.Uri
 import com.example.fashion_app_movil_kotlin.database.item.Item
 
 sealed interface ItemEvent {
