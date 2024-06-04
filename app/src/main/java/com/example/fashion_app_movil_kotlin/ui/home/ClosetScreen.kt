@@ -25,8 +25,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -34,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import com.example.fashion_app_movil_kotlin.R
 import com.example.fashion_app_movil_kotlin.database.item.Item
@@ -60,10 +66,10 @@ fun ClosetScreen(
     // Importante ver si se necesita userState o itemState en los otros Screens
     val itemState by itemViewModel.state.collectAsState()
 
-
     Box(
         Modifier.fillMaxSize()
     ) {
+
         ClosetPortrait(
             modifier = Modifier,
             itemViewModel,
@@ -78,6 +84,7 @@ fun ClosetScreen(
         )
     }
 }
+
 @Composable
 fun ClosetPortrait(
     modifier: Modifier,
@@ -92,10 +99,6 @@ fun ClosetPortrait(
 
     onEvent: (ItemEvent) -> Unit,
 ) {
-    var topItems: List<Item> = emptyList()
-    var BottomItems: List<Item> = emptyList()
-    var shoesItems: List<Item> = emptyList()
-
     Scaffold(
         topBar = {
             TopAppBarImage(modifier = Modifier)
@@ -132,8 +135,9 @@ fun ClosetPortrait(
                     modifier = Modifier.padding(8.dp)
                 )
                 // Display top items
-                if (topItems.isNotEmpty()) {
-                    DisplayCarouselTop(topItems)
+                if (itemState.items.isNotEmpty()) {
+                    Log.d("ImagePrinted", "Printed image path: ${Uri.parse(itemState.items[0].imagePath)}")
+                    DisplayCarouselTop(itemState.items)
                 } else {
                     // Display the default placeholder image if no image is selected
                     Image(
@@ -152,10 +156,9 @@ fun ClosetPortrait(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(8.dp)
                 )
-                if (shoesItems.isNotEmpty()) {
-                    DisplayCarouselTop(shoesItems)
-                }
-                else {
+                if (itemState.items.isNotEmpty()) {
+                    DisplayCarouselBottom(itemState.items)
+                } else {
                     // Display the default placeholder image if no image is selected
                     Image(
                         painter = painterResource(id = R.drawable.null_pointer_symbol),
@@ -165,8 +168,7 @@ fun ClosetPortrait(
                             .width(100.dp)
                     )
                 }
-
-                // Display bottom items
+                // Display shoes items
                 Text(
                     text = "Calzado",
                     fontSize = 24.sp,
@@ -174,10 +176,9 @@ fun ClosetPortrait(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(8.dp)
                 )
-                if (shoesItems.isNotEmpty()) {
-                    DisplayCarouselTop(shoesItems)
-                }
-                else {
+                if (itemState.items.isNotEmpty()) {
+                    DisplayCarouselShoes(itemState.items)
+                } else {
                     // Display the default placeholder image if no image is selected
                     Image(
                         painter = painterResource(id = R.drawable.null_pointer_symbol),
@@ -187,16 +188,11 @@ fun ClosetPortrait(
                             .width(100.dp)
                     )
                 }
-
             }
+            // Reset Button: NO HACE NADA AUN
             FloatingActionButton(
                 onClick = {
-                    onEvent(ItemEvent.GetItemsByClothingType("Prenda superior"))
-                    topItems = itemState.items
-                    onEvent(ItemEvent.GetItemsByClothingType("Prenda inferior"))
-                    BottomItems = itemState.items
-                    onEvent(ItemEvent.GetItemsByClothingType("Calzado"))
-                    shoesItems = itemState.items
+
                 },
                 modifier = Modifier
                     .padding(16.dp) // Add padding around FAB
@@ -204,6 +200,7 @@ fun ClosetPortrait(
             ) {
                 Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Add Clothing")
             }
+
             FloatingActionButton(
                 onClick = onAddClothingSelected,
                 modifier = Modifier
@@ -224,7 +221,6 @@ fun DisplayCarouselTop(items: List<Item>) {
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(items) { item ->
-            if(item.clothingType == "Prenda superior") {
             Image(
                 painter = rememberImagePainter(Uri.parse(item.imagePath)),
                 contentDescription = item.clothingType,
@@ -232,8 +228,6 @@ fun DisplayCarouselTop(items: List<Item>) {
                     .width(100.dp)
                     .height(100.dp)
             )
-        }
-
         }
     }
 }
@@ -245,7 +239,29 @@ fun DisplayCarouselBottom(items: List<Item>) {
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(items) { item ->
-            if(item.clothingType == "Prenda inferior") {
+            if (item.clothingType == "Prenda inferior") {
+                Image(
+                    painter = rememberImagePainter(Uri.parse(item.imagePath)),
+                    contentDescription = item.clothingType,
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(100.dp)
+                )
+            }
+
+        }
+    }
+}
+
+
+@Composable
+fun DisplayCarouselShoes(items: List<Item>) {
+    LazyRow(
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(items) { item ->
+            if (item.clothingType == "Calzado") {
                 Image(
                     painter = rememberImagePainter(Uri.parse(item.imagePath)),
                     contentDescription = item.clothingType,
@@ -272,7 +288,7 @@ fun DisplayItems(items: List<Item>) {
     ) {
         items(items) { item ->
             Image(
-                painter = rememberImagePainter(item.imagePath),
+                painter = rememberImagePainter(Uri.parse(item.imagePath)),
                 contentDescription = item.clothingType,
                 modifier = Modifier
                     .fillMaxSize()
@@ -281,30 +297,4 @@ fun DisplayItems(items: List<Item>) {
         }
     }
 }
-
-/*
-@Composable
-fun DisplayItemsByClothingType(itemState: ItemState, clotingType: String) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(150.dp),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        var itemsFiltered = itemState.items.filter { it.clothingType == clotingType }
-        items(itemsFiltered) { itemFiltered ->
-            Image(
-                painter = rememberImagePainter(itemFiltered.imagePath),
-                contentDescription = itemFiltered.clothingType,
-                modifier = Modifier
-                    .fillMaxSize()
-            )
-            Log.d("ImagePrinted", "Printed image path: ${itemFiltered.imagePath}")
-        }
-    }
-    */
-
 

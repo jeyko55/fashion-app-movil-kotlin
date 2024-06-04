@@ -1,9 +1,7 @@
 package com.example.fashion_app_movil_kotlin.ui.home
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -53,6 +51,12 @@ import coil.compose.rememberImagePainter
 import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.ui.components.*
 import java.util.Objects
+import android.content.Context
+import android.net.Uri
+import android.provider.OpenableColumns
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 @Composable
 fun AddClothingScreen(
@@ -126,6 +130,7 @@ fun AddClothingPortrait(
                     // OJO: Aquí se convierte a String para poderlo trabajar en la lógica pero hay que convertir a Uri.parse() luego
                     var selectedImage = selectedImageUri.toString()
                     Log.d("ImagePath", "Saved image path: $selectedImage")
+
                     onEvent(ItemEvent.SetImagePath(selectedImage))
                 }
             }
@@ -368,7 +373,7 @@ fun AddClothingPortrait(
                     ),
                     onClick = {
                         onEvent(ItemEvent.SaveItem)
-                         // Pone los campos en blanco
+                        restartState(onEvent)// Pone los campos en blanco
                         onItemCreatedNav()
                     },
                     enabled = isItemValid(itemState), // FALTA HACER
