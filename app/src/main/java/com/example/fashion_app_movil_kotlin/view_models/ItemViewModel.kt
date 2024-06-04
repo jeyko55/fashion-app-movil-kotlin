@@ -7,8 +7,10 @@ import com.example.fashion_app_movil_kotlin.database.item.Item
 import com.example.fashion_app_movil_kotlin.database.item.ItemDAO
 import com.example.fashion_app_movil_kotlin.events.ItemEvent
 import com.example.fashion_app_movil_kotlin.states.ItemState
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -23,7 +25,7 @@ class ItemViewModel(
 
     private val _state = MutableStateFlow(ItemState())
 
-    val state = combine(_state, _items) { state, items ->
+    var state = combine(_state, _items) { state, items ->
         state.copy(
             items = items
         )
@@ -79,6 +81,19 @@ class ItemViewModel(
                     it.copy(
                         color = event.color
                     )
+                }
+            }
+
+            is ItemEvent.GetItemsByClothingType -> {
+                viewModelScope.launch {
+                    dao.getItemsByClothingType(event.clothingType).collect() {items ->
+                        // Update state with the filtered items
+                        _state.update {
+                            it.copy(
+                                items = items
+                            )
+                        } // Assuming usage of collect() to retrieve the actual list
+                    }
                 }
             }
         }

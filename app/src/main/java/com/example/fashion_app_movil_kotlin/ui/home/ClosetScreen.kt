@@ -1,5 +1,6 @@
 package com.example.fashion_app_movil_kotlin.ui.home
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -11,11 +12,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -25,14 +29,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
+import com.example.fashion_app_movil_kotlin.R
+import com.example.fashion_app_movil_kotlin.database.item.Item
 import com.example.fashion_app_movil_kotlin.events.ItemEvent
 import com.example.fashion_app_movil_kotlin.states.ItemState
-import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 import com.example.fashion_app_movil_kotlin.ui.components.*
 import com.example.fashion_app_movil_kotlin.view_models.ItemViewModel
 
@@ -49,15 +55,18 @@ fun ClosetScreen(
     // Add button
     onAddClothingSelected: () -> Unit,
 
-    ) {
+    onEvent: (ItemEvent) -> Unit,
+) {
     // Importante ver si se necesita userState o itemState en los otros Screens
     val itemState by itemViewModel.state.collectAsState()
+
 
     Box(
         Modifier.fillMaxSize()
     ) {
         ClosetPortrait(
             modifier = Modifier,
+            itemViewModel,
             itemState,
             onClosetSelected,
             onCombinationsSelected,
@@ -65,13 +74,14 @@ fun ClosetScreen(
             onArchivedSelected,
             onProfileSelected,
             onAddClothingSelected,
+            onEvent,
         )
     }
 }
-
 @Composable
 fun ClosetPortrait(
     modifier: Modifier,
+    itemViewModel: ItemViewModel,
     itemState: ItemState,
     onClosetSelected: () -> Unit,
     onCombinationsSelected: () -> Unit,
@@ -79,7 +89,13 @@ fun ClosetPortrait(
     onArchivedSelected: () -> Unit,
     onProfileSelected: () -> Unit,
     onAddClothingSelected: () -> Unit,
+
+    onEvent: (ItemEvent) -> Unit,
 ) {
+    var topItems: List<Item> = emptyList()
+    var BottomItems: List<Item> = emptyList()
+    var shoesItems: List<Item> = emptyList()
+
     Scaffold(
         topBar = {
             TopAppBarImage(modifier = Modifier)
@@ -106,50 +122,87 @@ fun ClosetPortrait(
                     .fillMaxWidth()
                     .padding(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Box {
-                    Text(
-                        text = "Prendas superiores",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                    // For printing the 'Prendas superiores' image list
-                    DisplayItemsByClothingType(
-                        itemState,
-                        "Prenda superior"
+            ) {
+                // Title "Prendas superiores"
+                Text(
+                    text = "Prendas superiores",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(8.dp)
+                )
+                // Display top items
+                if (topItems.isNotEmpty()) {
+                    DisplayCarouselTop(topItems)
+                } else {
+                    // Display the default placeholder image if no image is selected
+                    Image(
+                        painter = painterResource(id = R.drawable.null_pointer_symbol),
+                        contentDescription = "Add Clothing Image",
+                        modifier = Modifier
+                            .height(100.dp)
+                            .width(100.dp)
                     )
                 }
-                Box {
-                    Text(
-                        text = "Prendas inferiores",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                    // For printing the 'Prendas superiores' image list
-                    DisplayItemsByClothingType(
-                        itemState,
-                        "Prenda inferior"
+                // Título Prendas inferiores
+                Text(
+                    text = "Prendas inferiores",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(8.dp)
+                )
+                if (shoesItems.isNotEmpty()) {
+                    DisplayCarouselTop(shoesItems)
+                }
+                else {
+                    // Display the default placeholder image if no image is selected
+                    Image(
+                        painter = painterResource(id = R.drawable.null_pointer_symbol),
+                        contentDescription = "Add Clothing Image",
+                        modifier = Modifier
+                            .height(100.dp)
+                            .width(100.dp)
                     )
                 }
 
-                Box {
-                    Text(
-                        text = "Calzado",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                    // For printing the 'Prendas superiores' image list
-                    DisplayItemsByClothingType(
-                        itemState,
-                        "Calzado"
+                // Display bottom items
+                Text(
+                    text = "Calzado",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(8.dp)
+                )
+                if (shoesItems.isNotEmpty()) {
+                    DisplayCarouselTop(shoesItems)
+                }
+                else {
+                    // Display the default placeholder image if no image is selected
+                    Image(
+                        painter = painterResource(id = R.drawable.null_pointer_symbol),
+                        contentDescription = "Add Clothing Image",
+                        modifier = Modifier
+                            .height(100.dp)
+                            .width(100.dp)
                     )
                 }
+
+            }
+            FloatingActionButton(
+                onClick = {
+                    onEvent(ItemEvent.GetItemsByClothingType("Prenda superior"))
+                    topItems = itemState.items
+                    onEvent(ItemEvent.GetItemsByClothingType("Prenda inferior"))
+                    BottomItems = itemState.items
+                    onEvent(ItemEvent.GetItemsByClothingType("Calzado"))
+                    shoesItems = itemState.items
+                },
+                modifier = Modifier
+                    .padding(16.dp) // Add padding around FAB
+                    .align(Alignment.TopEnd) // Position FAB bottom-right
+            ) {
+                Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Add Clothing")
             }
             FloatingActionButton(
                 onClick = onAddClothingSelected,
@@ -164,6 +217,72 @@ fun ClosetPortrait(
 }
 
 
+@Composable
+fun DisplayCarouselTop(items: List<Item>) {
+    LazyRow(
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(items) { item ->
+            if(item.clothingType == "Prenda superior") {
+            Image(
+                painter = rememberImagePainter(Uri.parse(item.imagePath)),
+                contentDescription = item.clothingType,
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(100.dp)
+            )
+        }
+
+        }
+    }
+}
+
+@Composable
+fun DisplayCarouselBottom(items: List<Item>) {
+    LazyRow(
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(items) { item ->
+            if(item.clothingType == "Prenda inferior") {
+                Image(
+                    painter = rememberImagePainter(Uri.parse(item.imagePath)),
+                    contentDescription = item.clothingType,
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(100.dp)
+                )
+            }
+
+        }
+    }
+}
+
+@Composable
+fun DisplayItems(items: List<Item>) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(150.dp),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(items) { item ->
+            Image(
+                painter = rememberImagePainter(item.imagePath),
+                contentDescription = item.clothingType,
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+            Log.d("ImagePrinted", "Printed image path: ${item.imagePath}")
+        }
+    }
+}
+
+/*
 @Composable
 fun DisplayItemsByClothingType(itemState: ItemState, clotingType: String) {
     LazyVerticalGrid(
@@ -186,5 +305,6 @@ fun DisplayItemsByClothingType(itemState: ItemState, clotingType: String) {
             Log.d("ImagePrinted", "Printed image path: ${itemFiltered.imagePath}")
         }
     }
-}
+    */
+
 

@@ -123,6 +123,7 @@ fun AddClothingPortrait(
                 val data = result.data
                 var selectedImageUri = data?.data // Get the selected image URI
                 if (selectedImageUri != null) {
+                    // OJO: Aquí se convierte a String para poderlo trabajar en la lógica pero hay que convertir a Uri.parse() luego
                     var selectedImage = selectedImageUri.toString()
                     Log.d("ImagePath", "Saved image path: $selectedImage")
                     onEvent(ItemEvent.SetImagePath(selectedImage))
@@ -367,7 +368,7 @@ fun AddClothingPortrait(
                     ),
                     onClick = {
                         onEvent(ItemEvent.SaveItem)
-                        restartState(onEvent) // Pone los campos en blanco
+                         // Pone los campos en blanco
                         onItemCreatedNav()
                     },
                     enabled = isItemValid(itemState), // FALTA HACER

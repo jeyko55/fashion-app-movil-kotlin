@@ -8,4 +8,6 @@ sealed interface ItemEvent {
     data class SetClothingType(val clothingType: String) : ItemEvent
     data class SetColor(val color: String) : ItemEvent
     data class DeteleItem(val item: Item) : ItemEvent
+    data class GetItemsByClothingType(val clothingType: String) : ItemEvent
+
 }

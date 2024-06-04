@@ -77,4 +77,5 @@ dependencies {
     kapt ("androidx.room:room-compiler:2.6.1")
 
     implementation("io.coil-kt:coil-compose:1.4.0")
+
 }
