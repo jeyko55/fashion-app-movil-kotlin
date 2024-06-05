@@ -10,10 +10,8 @@ import com.example.fashion_app_movil_kotlin.database.item.Item
 import com.example.fashion_app_movil_kotlin.database.item.ItemDAO
 import com.example.fashion_app_movil_kotlin.events.ItemEvent
 import com.example.fashion_app_movil_kotlin.states.ItemState
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -23,11 +21,11 @@ import java.io.FileOutputStream
 import java.io.InputStream
 
 class ItemViewModel(
-    private val dao: ItemDAO,
+    private val itemDao: ItemDAO,
     private val context: Context
 ) : ViewModel() {
 
-    private val _items = dao.getAllItems()
+    private val _items = itemDao.getAllItems()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _state = MutableStateFlow(ItemState())
@@ -54,7 +52,7 @@ class ItemViewModel(
                         color = color
                     )
 
-                    dao.upsertItem(item)
+                    itemDao.upsertItem(item)
 
                     _state.update {
                         it.copy(
@@ -64,33 +62,11 @@ class ItemViewModel(
                         )
                     }
                 }
-
-                /* SaveItem viejo
-
-                val imagePath = _state.value.imagePath
-                val clothingType = _state.value.clothingType
-                val color = _state.value.color
-                val item = Item(
-                    imagePath = imagePath,
-                    clothingType = clothingType,
-                    color = color
-                )
-                viewModelScope.launch {
-                    dao.upsertItem(item)
-                }
-                _state.update {
-                    it.copy(
-                        imagePath = "",
-                        clothingType = "",
-                        color = "",
-                    )
-                }
-                */
             }
 
             is ItemEvent.DeteleItem -> {
                 viewModelScope.launch {
-                    dao.deleteItem(event.item)
+                    itemDao.deleteItem(event.item)
                 }
             }
 
@@ -117,54 +93,41 @@ class ItemViewModel(
                     )
                 }
             }
+        }
+    }
+    fun copyImageToAppStorage(context: Context, sourceUri: Uri): Uri? {
+        val contentResolver = context.contentResolver
 
-            is ItemEvent.GetItemsByClothingType -> {
-                viewModelScope.launch {
-                    dao.getItemsByClothingType(event.clothingType).collect() { items ->
-                        // Update state with the filtered items
-                        _state.update {
-                            it.copy(
-                                items = items
-                            )
-                        } // Assuming usage of collect() to retrieve the actual list
-                    }
-                }
+        // Obtener el nombre del archivo desde el URI original
+        val fileName = contentResolver.query(sourceUri, null, null, null, null)?.use { cursor ->
+            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            cursor.moveToFirst()
+            cursor.getString(nameIndex)
+        } ?: return null
+
+        // Crear un nuevo archivo en el almacenamiento específico de la aplicación
+        val appSpecificStorage = File(context.filesDir, fileName)
+
+        // Copiar el contenido del archivo original al nuevo archivo
+        contentResolver.openInputStream(sourceUri)?.use { inputStream ->
+            FileOutputStream(appSpecificStorage).use { outputStream ->
+                copyStream(inputStream, outputStream)
             }
         }
 
+        // Devolver la URI del nuevo archivo
+        return Uri.fromFile(appSpecificStorage)
     }
-}
 
-fun copyImageToAppStorage(context: Context, sourceUri: Uri): Uri? {
-    val contentResolver = context.contentResolver
-
-    // Obtener el nombre del archivo desde el URI original
-    val fileName = contentResolver.query(sourceUri, null, null, null, null)?.use { cursor ->
-        val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-        cursor.moveToFirst()
-        cursor.getString(nameIndex)
-    } ?: return null
-
-    // Crear un nuevo archivo en el almacenamiento específico de la aplicación
-    val appSpecificStorage = File(context.filesDir, fileName)
-
-    // Copiar el contenido del archivo original al nuevo archivo
-    contentResolver.openInputStream(sourceUri)?.use { inputStream ->
-        FileOutputStream(appSpecificStorage).use { outputStream ->
-            copyStream(inputStream, outputStream)
+    fun copyStream(input: InputStream, output: FileOutputStream) {
+        val buffer = ByteArray(1024)
+        var length: Int
+        while (input.read(buffer).also { length = it } > 0) {
+            output.write(buffer, 0, length)
         }
     }
-
-    // Devolver la URI del nuevo archivo
-    return Uri.fromFile(appSpecificStorage)
 }
 
-fun copyStream(input: InputStream, output: FileOutputStream) {
-    val buffer = ByteArray(1024)
-    var length: Int
-    while (input.read(buffer).also { length = it } > 0) {
-        output.write(buffer, 0, length)
-    }
-}
+
 
 

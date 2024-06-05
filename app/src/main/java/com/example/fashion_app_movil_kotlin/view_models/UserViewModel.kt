@@ -14,10 +14,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class UserViewModel(
-    private val dao: UserDAO
+    private val userDao: UserDAO
 ) : ViewModel() {
 
-    private val _users = dao.getAllUsers()
+    private val _users = userDao.getAllUsers()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _state = MutableStateFlow(UserState())
@@ -29,12 +29,6 @@ class UserViewModel(
 
     fun onEvent(event: UserEvent) {
         when (event) {
-            is UserEvent.DeleteContact -> {
-                viewModelScope.launch {
-                    dao.deleteUser(event.user)
-                }
-            }
-
             is UserEvent.SaveUser -> {
                 val name = _state.value.name
                 val email = _state.value.email
@@ -48,8 +42,9 @@ class UserViewModel(
                     password = password
                 )
                 viewModelScope.launch {
-                    dao.upsertUser(user)
+                    userDao.upsertUser(user)
                 }
+
                 _state.update {
                     it.copy(
                         name = "",
@@ -58,6 +53,12 @@ class UserViewModel(
                         password = "",
                         isAddingUser = false
                     )
+                }
+            }
+
+            is UserEvent.DeleteContact -> {
+                viewModelScope.launch {
+                    userDao.deleteUser(event.user)
                 }
             }
 
@@ -103,7 +104,7 @@ class UserViewModel(
 
                 viewModelScope.launch {
                     // Check if user exists with email
-                    val user = dao.getUserByEmail(email)
+                    val user = userDao.getUserByEmail(email)
                     if (user != null) {
                         // User exists, check password
                         if (user.password == password) {

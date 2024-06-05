@@ -41,6 +41,7 @@ import com.example.fashion_app_movil_kotlin.ui.login_register.LoginRegisterScree
 import com.example.fashion_app_movil_kotlin.ui.login_register.LoginScreen
 import com.example.fashion_app_movil_kotlin.ui.login_register.RegisterScreen
 import com.example.fashion_app_movil_kotlin.view_models.ItemViewModel
+import com.example.fashion_app_movil_kotlin.view_models.UserItemViewModel
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 
 
@@ -59,6 +60,7 @@ fun FashionAppBottonBar() {
 fun FashionApp(
     userViewModel: UserViewModel = viewModel(),
     itemViewModel: ItemViewModel = viewModel(),
+    userItemViewModel: UserItemViewModel = viewModel(),
 
     navController: NavHostController = rememberNavController()
 ) {
