@@ -45,6 +45,7 @@ import com.example.fashion_app_movil_kotlin.events.ItemEvent
 import com.example.fashion_app_movil_kotlin.states.ItemState
 import com.example.fashion_app_movil_kotlin.view_models.ItemViewModel
 import coil.compose.rememberImagePainter
+import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.ui.components.*
 import com.example.fashion_app_movil_kotlin.events.UserItemEvent
 import com.example.fashion_app_movil_kotlin.states.UserItemState
@@ -54,10 +55,15 @@ import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 
 @Composable
 fun AddClothingScreen(
-
+    // View Models
     userViewModel: UserViewModel,
     itemViewModel: ItemViewModel,
     userItemViewModel: UserItemViewModel,
+
+    // Eventos locales
+    onUserEvent: (UserEvent) -> Unit,
+    onItemEvent: (ItemEvent) -> Unit,
+    onUserItemEvent: (UserItemEvent) -> Unit,
 
     // BottomBar Icons Selections
     onClosetSelected: () -> Unit,
@@ -69,9 +75,7 @@ fun AddClothingScreen(
 
     onAddItemSelected: () -> Unit,
 
-    // Eventos locales
-    onItemEvent: (ItemEvent) -> Unit,
-    onUserItemEvent: (UserItemEvent) -> Unit,
+    // Navegación
     onItemCreatedNav: () -> Unit
 ) {
     val userState by userViewModel.state.collectAsState()
@@ -89,6 +93,10 @@ fun AddClothingScreen(
             userState,
             itemState,
             userItemState,
+            // Eventos locales
+            onUserEvent,
+            onItemEvent,
+            onUserItemEvent,
 
             onClosetSelected,
             onCombinationsSelected,
@@ -99,8 +107,6 @@ fun AddClothingScreen(
 
             onAddItemSelected,
 
-            onItemEvent,
-            onUserItemEvent,
             onItemCreatedNav
         )
     }
@@ -115,6 +121,11 @@ fun AddClothingPortrait(
     itemState: ItemState,
     userItemState: UserItemState,
 
+    // Eventos locales
+    onUserEvent: (UserEvent) -> Unit,
+    onItemEvent: (ItemEvent) -> Unit,
+    onUserItemEvent: (UserItemEvent) -> Unit,
+
     onClosetSelected: () -> Unit,
     onCombinationsSelected: () -> Unit,
     onCalendarSelected: () -> Unit,
@@ -124,9 +135,6 @@ fun AddClothingPortrait(
 
     onAddItemSelected: () -> Unit,
 
-    // Eventos locales
-    onItemEvent: (ItemEvent) -> Unit,
-    onUserItemEvent: (UserItemEvent) -> Unit,
     onItemCreatedNav: () -> Unit
 ) {
     val context = LocalContext.current // Get the current context

@@ -39,6 +39,8 @@ import coil.compose.rememberImagePainter
 import com.example.fashion_app_movil_kotlin.R
 import com.example.fashion_app_movil_kotlin.database.item.Item
 import com.example.fashion_app_movil_kotlin.events.ItemEvent
+import com.example.fashion_app_movil_kotlin.events.UserEvent
+import com.example.fashion_app_movil_kotlin.events.UserItemEvent
 import com.example.fashion_app_movil_kotlin.states.ItemState
 import com.example.fashion_app_movil_kotlin.states.UserItemState
 import com.example.fashion_app_movil_kotlin.states.UserState
@@ -49,10 +51,15 @@ import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 
 @Composable
 fun ClosetScreen(
-
+// View Models
     userViewModel: UserViewModel,
     itemViewModel: ItemViewModel,
     userItemViewModel: UserItemViewModel,
+
+    // Eventos locales
+    onUserEvent: (UserEvent) -> Unit,
+    onItemEvent: (ItemEvent) -> Unit,
+    onUserItemEvent: (UserItemEvent) -> Unit,
 
     // BottomBar
     onClosetSelected: () -> Unit,
@@ -63,8 +70,6 @@ fun ClosetScreen(
 
     // Add button
     onAddClothingSelected: () -> Unit,
-
-    onItemEvent: (ItemEvent) -> Unit,
 ) {
     val userState by userViewModel.state.collectAsState()
     val itemState by itemViewModel.state.collectAsState()
@@ -77,10 +82,15 @@ fun ClosetScreen(
 
         ClosetPortrait(
             modifier = Modifier,
-
+            // States from View Models
             userState,
             itemState,
             userItemState,
+
+            // Eventos locales
+            onUserEvent,
+            onItemEvent,
+            onUserItemEvent,
 
             onClosetSelected,
             onCombinationsSelected,
@@ -88,7 +98,6 @@ fun ClosetScreen(
             onArchivedSelected,
             onProfileSelected,
             onAddClothingSelected,
-            onItemEvent,
         )
     }
 }
@@ -97,9 +106,15 @@ fun ClosetScreen(
 fun ClosetPortrait(
     modifier: Modifier,
 
+    // States from View Models
     userState: UserState,
     itemState: ItemState,
     userItemState: UserItemState,
+
+    // Eventos locales
+    onUserEvent: (UserEvent) -> Unit,
+    onItemEvent: (ItemEvent) -> Unit,
+    onUserItemEvent: (UserItemEvent) -> Unit,
 
     onClosetSelected: () -> Unit,
     onCombinationsSelected: () -> Unit,
@@ -107,8 +122,6 @@ fun ClosetPortrait(
     onArchivedSelected: () -> Unit,
     onProfileSelected: () -> Unit,
     onAddClothingSelected: () -> Unit,
-
-    onItemEvent: (ItemEvent) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -147,12 +160,10 @@ fun ClosetPortrait(
                 )
                 // Display top items
                 // Flag para ver si hay items de ptendas inferiores
-                var flagTopItems = false
-                if (itemState.items.isNotEmpty()) {
-                    flagTopItems = itemState.items.any { it.clothingType == "Prenda superior" }
-                    if (flagTopItems) {
-                        DisplayCarouselByClothingType(itemState.items, "Prenda superior")
-                    }
+                var flagTopItems = itemState.items.any { it.clothingType == "Prenda superior" }
+                //var actualUser = userState.users.find { it.email == userState.email }
+                if (itemState.items.isNotEmpty() && flagTopItems /*&& actualUser.userId == */) {
+                    DisplayCarouselByClothingType(itemState.items, "Prenda superior")
                 } else {
                     // Display the default placeholder image if no image is selected
                     Image(
@@ -172,12 +183,9 @@ fun ClosetPortrait(
                     modifier = Modifier
                 )
                 // Flag para ver si hay items de ptendas inferiores
-                var flagBottomItems = false
-                if (itemState.items.isNotEmpty()) {
-                    flagBottomItems = itemState.items.any { it.clothingType == "Prenda inferior" }
-                    if (flagBottomItems) {
-                        DisplayCarouselByClothingType(itemState.items, "Prenda inferior")
-                    }
+                var flagBottomItems = itemState.items.any { it.clothingType == "Prenda inferior" }
+                if (itemState.items.isNotEmpty() && flagBottomItems) {
+                    DisplayCarouselByClothingType(itemState.items, "Prenda inferior")
                 } else {
                     // Display the default placeholder image if no image is selected
                     Image(
@@ -198,12 +206,9 @@ fun ClosetPortrait(
                 )
                 // Display shoes items
                 // Flag para ver si hay items de calzado
-                var flagShoes = false
-                if (itemState.items.isNotEmpty()) {
-                    flagShoes = itemState.items.any { it.clothingType == "Calzado" }
-                    if (flagShoes) {
-                        DisplayCarouselByClothingType(itemState.items, "Calzado")
-                    }
+                var flagShoes = itemState.items.any { it.clothingType == "Calzado" }
+                if (itemState.items.isNotEmpty() && flagShoes) {
+                    DisplayCarouselByClothingType(itemState.items, "Calzado")
                 } else {
                     // Display the default placeholder image if no image is selected
                     Image(
@@ -214,17 +219,6 @@ fun ClosetPortrait(
                             .width(100.dp)
                     )
                 }
-            }
-            // Reset Button: NO HACE NADA AUN
-            FloatingActionButton(
-                onClick = {
-
-                },
-                modifier = Modifier
-                    .padding(16.dp) // Add padding around FAB
-                    .align(Alignment.TopEnd) // Position FAB bottom-right
-            ) {
-                Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Add Clothing")
             }
 
             FloatingActionButton(
