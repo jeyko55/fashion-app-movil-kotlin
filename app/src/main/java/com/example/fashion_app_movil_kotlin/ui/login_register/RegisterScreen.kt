@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.fashion_app_movil_kotlin.R
 import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.states.UserState
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
@@ -44,7 +45,7 @@ fun RegisterScreen(
             .fillMaxSize()
 
     ) {
-        BackgroundImage(Modifier.fillMaxSize())
+        BackgroundImage(Modifier.fillMaxSize(), resourceId = R.drawable.background_image)
 
         Box {
             RegisterPortrait(

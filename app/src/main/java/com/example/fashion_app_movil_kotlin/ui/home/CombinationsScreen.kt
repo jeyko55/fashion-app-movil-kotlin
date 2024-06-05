@@ -70,6 +70,7 @@ fun CombinationsScreen (
     Box(
         Modifier.fillMaxSize()
     ) {
+        BackgroundImage(modifier = Modifier, resourceId = R.drawable.background_home_image)
 
         ClosetPortrait(
             modifier = Modifier,

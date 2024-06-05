@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.fashion_app_movil_kotlin.R
 import com.example.fashion_app_movil_kotlin.states.UserState
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 import com.example.fashion_app_movil_kotlin.ui.components.*
@@ -37,8 +38,7 @@ fun LoginRegisterScreen(
             .fillMaxSize()
 
     ) {
-        BackgroundImage(modifier = Modifier)
-
+        BackgroundImage(modifier = Modifier, resourceId = R.drawable.background_image)
         Box {
             LoginRegisterPortrait(
                 modifier = Modifier,

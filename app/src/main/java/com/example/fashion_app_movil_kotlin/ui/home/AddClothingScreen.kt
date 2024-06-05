@@ -81,6 +81,8 @@ fun AddClothingScreen(
     Box(
         Modifier.fillMaxSize()
     ) {
+        BackgroundImage(modifier = Modifier, resourceId = R.drawable.background_home_image)
+
         AddClothingPortrait(
             modifier = Modifier,
 
