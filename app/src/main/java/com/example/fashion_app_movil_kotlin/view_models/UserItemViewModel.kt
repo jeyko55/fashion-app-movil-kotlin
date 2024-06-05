@@ -41,7 +41,6 @@ class UserItemViewModel(
                         userId = userId,
                         itemId = itemId
                     )
-
                     userItemDao.upsertUserItem(userItem)
 
                     _state.update {

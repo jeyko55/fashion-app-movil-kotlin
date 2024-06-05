@@ -36,7 +36,7 @@ class ItemViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ItemState())
 
-    fun onEvent(event: ItemEvent) {
+    fun onItemEvent(event: ItemEvent) {
         when (event) {
             is ItemEvent.SaveItem -> {
                 viewModelScope.launch {
@@ -56,9 +56,9 @@ class ItemViewModel(
 
                     _state.update {
                         it.copy(
-                            imagePath = "",
-                            clothingType = "",
-                            color = "",
+                            imagePath = copiedUri.toString(),
+                            clothingType = clothingType,
+                            color = color,
                         )
                     }
                 }

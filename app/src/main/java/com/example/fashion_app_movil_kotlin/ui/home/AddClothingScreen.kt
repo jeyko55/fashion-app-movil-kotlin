@@ -27,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -382,15 +383,6 @@ fun AddClothingPortrait(
                     ),
                     onClick = {
                         onItemEvent(ItemEvent.SaveItem) // Guarda el item en la tabla Item
-
-                        // IMPORTANTE: Aquí se guardan los datos de UserItem en la tabla intermedia UserItem
-                        val userActual = userState.users.find { it.email == userState.email }
-                        val itemActual = itemState.items.find { it.imagePath == itemState.imagePath }
-
-                        onUserItemEvent(UserItemEvent.SetUserId(userActual!!.userId)) // Pone el userId de UserItemState igual al userActual
-                        onUserItemEvent(UserItemEvent.SetItemId(itemActual!!.itemId)) // Pone el itemId de UserItemState igual al itemActual
-                        onUserItemEvent(UserItemEvent.SaveUserItem)
-
                         restartItemState(onItemEvent)// Pone los campos en blanco
                         onItemCreatedNav()
                     },
@@ -399,8 +391,23 @@ fun AddClothingPortrait(
                     Text(text = "Agregar prenda")
                 } // End 'Agregar prenda' Button
             }
+            // Escucha los cambios en el estado del item
+            LaunchedEffect(itemState) {
+                // IMPORTANTE: Aquí se guardan los datos de UserItem en la tabla intermedia UserItem
+                val newItem = itemState.items.lastOrNull { it.imagePath == itemState.imagePath }
+                if (newItem != null) {
+                    val userActual = userState.users.find { it.email == userState.email }
+                    onUserItemEvent(UserItemEvent.SetUserId(userActual!!.userId))
+                    onUserItemEvent(UserItemEvent.SetItemId(newItem.itemId))
+                    onUserItemEvent(UserItemEvent.SaveUserItem)
+                }
+            }
         }
     }
+}
+
+fun saveUserItem(onUserItemEvent: (UserItemEvent) -> Unit) {
+
 }
 
 fun isItemValid(state: ItemState): Boolean {

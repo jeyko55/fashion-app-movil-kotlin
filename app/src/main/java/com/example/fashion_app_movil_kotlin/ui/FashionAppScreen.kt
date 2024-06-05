@@ -74,7 +74,7 @@ fun FashionApp(
                     itemViewModel = itemViewModel,
                     userItemViewModel = userItemViewModel,
 
-                    onItemEvent = itemViewModel::onEvent,
+                    onItemEvent = itemViewModel::onItemEvent,
 
                     // BottomBar
                     onClosetSelected = {
@@ -104,7 +104,7 @@ fun FashionApp(
                     itemViewModel = itemViewModel,
                     userItemViewModel = userItemViewModel,
 
-                    onItemEvent = itemViewModel::onEvent,
+                    onItemEvent = itemViewModel::onItemEvent,
                     onUserItemEvent = userItemViewModel::onUserItemEvent,
                     // BottomBar
                     onClosetSelected = {
@@ -142,7 +142,7 @@ fun FashionApp(
                     itemViewModel = itemViewModel,
                     userItemViewModel = userItemViewModel,
 
-                    onItemEvent = itemViewModel::onEvent,
+                    onItemEvent = itemViewModel::onItemEvent,
 
                     // BottomBar
                     onClosetSelected = {
@@ -172,7 +172,7 @@ fun FashionApp(
                     itemViewModel = itemViewModel,
                     userItemViewModel = userItemViewModel,
 
-                    onItemEvent = itemViewModel::onEvent,
+                    onItemEvent = itemViewModel::onItemEvent,
 
                     // BottomBar
                     onClosetSelected = {
@@ -202,7 +202,7 @@ fun FashionApp(
                     itemViewModel = itemViewModel,
                     userItemViewModel = userItemViewModel,
 
-                    onItemEvent = itemViewModel::onEvent,
+                    onItemEvent = itemViewModel::onItemEvent,
 
                     // BottomBar
                     onClosetSelected = {
@@ -232,7 +232,7 @@ fun FashionApp(
                     itemViewModel = itemViewModel,
                     userItemViewModel = userItemViewModel,
 
-                    onItemEvent = itemViewModel::onEvent,
+                    onItemEvent = itemViewModel::onItemEvent,
 
                     // BottomBar
                     onClosetSelected = {
