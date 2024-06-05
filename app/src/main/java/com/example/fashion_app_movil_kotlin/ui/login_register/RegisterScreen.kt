@@ -34,7 +34,7 @@ import com.example.fashion_app_movil_kotlin.ui.components.*
 @Composable
 fun RegisterScreen(
     userViewModel: UserViewModel,
-    onEvent: (UserEvent) -> Unit,
+    onUserEvent: (UserEvent) -> Unit,
     onUserCreatedNav: () -> Unit
 ) {
     val userState by userViewModel.state.collectAsState()
@@ -50,7 +50,7 @@ fun RegisterScreen(
             RegisterPortrait(
                 Modifier.align(Alignment.Center),
                 userState,
-                onEvent,
+                onUserEvent,
                 onUserCreatedNav
             )
         }
@@ -61,7 +61,7 @@ fun RegisterScreen(
 fun RegisterPortrait(
     modifier: Modifier,
     userState: UserState,
-    onEvent: (UserEvent) -> Unit,
+    onUserEvent: (UserEvent) -> Unit,
     onUserCreatedNav: () -> Unit
 ) {
     Column(
@@ -97,7 +97,7 @@ fun RegisterPortrait(
             ),
             value = userState.name,
             onValueChange = {
-                onEvent(UserEvent.SetName(it))
+                onUserEvent(UserEvent.SetName(it))
             },
         )
 
@@ -116,7 +116,7 @@ fun RegisterPortrait(
             ),
             value = userState.email,
             onValueChange = {
-                onEvent(UserEvent.SetEmail(it))
+                onUserEvent(UserEvent.SetEmail(it))
             },
         )
 
@@ -134,7 +134,7 @@ fun RegisterPortrait(
             ),
             value = userState.phoneNumber,
             onValueChange = {
-                onEvent(UserEvent.SetPhoneNumber(it))
+                onUserEvent(UserEvent.SetPhoneNumber(it))
             }
         )
 
@@ -153,7 +153,7 @@ fun RegisterPortrait(
             ),
             value = userState.password,
             onValueChange = {
-                onEvent(UserEvent.SetPassword(it))
+                onUserEvent(UserEvent.SetPassword(it))
             }
         )
 
@@ -172,7 +172,7 @@ fun RegisterPortrait(
             ),
             value = userState.confirmPassword,
             onValueChange = {
-                onEvent(UserEvent.SetConfirmPassword(it))
+                onUserEvent(UserEvent.SetConfirmPassword(it))
             },
         )
 
@@ -188,7 +188,7 @@ fun RegisterPortrait(
                 containerColor = Color(0xFF03A9F4),
             ),
             onClick = {
-                onEvent(UserEvent.SaveUser)
+                onUserEvent(UserEvent.SaveUser)
                 onUserCreatedNav()
             },
             enabled = isRegisterValid(userState),

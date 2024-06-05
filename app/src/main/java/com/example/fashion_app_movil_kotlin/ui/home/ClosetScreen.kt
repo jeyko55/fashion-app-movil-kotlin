@@ -25,13 +25,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -39,18 +34,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import com.example.fashion_app_movil_kotlin.R
 import com.example.fashion_app_movil_kotlin.database.item.Item
 import com.example.fashion_app_movil_kotlin.events.ItemEvent
 import com.example.fashion_app_movil_kotlin.states.ItemState
+import com.example.fashion_app_movil_kotlin.states.UserItemState
+import com.example.fashion_app_movil_kotlin.states.UserState
 import com.example.fashion_app_movil_kotlin.ui.components.*
 import com.example.fashion_app_movil_kotlin.view_models.ItemViewModel
+import com.example.fashion_app_movil_kotlin.view_models.UserItemViewModel
+import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 
 @Composable
 fun ClosetScreen(
+
+    userViewModel: UserViewModel,
     itemViewModel: ItemViewModel,
+    userItemViewModel: UserItemViewModel,
+
     // BottomBar
     onClosetSelected: () -> Unit,
     onCombinationsSelected: () -> Unit,
@@ -61,10 +63,11 @@ fun ClosetScreen(
     // Add button
     onAddClothingSelected: () -> Unit,
 
-    onEvent: (ItemEvent) -> Unit,
+    onItemEvent: (ItemEvent) -> Unit,
 ) {
-    // Importante ver si se necesita userState o itemState en los otros Screens
+    val userState by userViewModel.state.collectAsState()
     val itemState by itemViewModel.state.collectAsState()
+    val userItemState by userItemViewModel.state.collectAsState()
 
     Box(
         Modifier.fillMaxSize()
@@ -72,15 +75,18 @@ fun ClosetScreen(
 
         ClosetPortrait(
             modifier = Modifier,
-            itemViewModel,
+
+            userState,
             itemState,
+            userItemState,
+
             onClosetSelected,
             onCombinationsSelected,
             onCalendarSelected,
             onArchivedSelected,
             onProfileSelected,
             onAddClothingSelected,
-            onEvent,
+            onItemEvent,
         )
     }
 }
@@ -88,8 +94,11 @@ fun ClosetScreen(
 @Composable
 fun ClosetPortrait(
     modifier: Modifier,
-    itemViewModel: ItemViewModel,
+
+    userState: UserState,
     itemState: ItemState,
+    userItemState: UserItemState,
+
     onClosetSelected: () -> Unit,
     onCombinationsSelected: () -> Unit,
     onCalendarSelected: () -> Unit,
@@ -97,8 +106,9 @@ fun ClosetPortrait(
     onProfileSelected: () -> Unit,
     onAddClothingSelected: () -> Unit,
 
-    onEvent: (ItemEvent) -> Unit,
+    onItemEvent: (ItemEvent) -> Unit,
 ) {
+
     Scaffold(
         topBar = {
             TopAppBarImage(modifier = Modifier)

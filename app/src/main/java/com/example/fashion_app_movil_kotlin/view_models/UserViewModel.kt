@@ -6,12 +6,14 @@ import com.example.fashion_app_movil_kotlin.database.user.User
 import com.example.fashion_app_movil_kotlin.database.user.UserDAO
 import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.states.UserState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UserViewModel(
     private val userDao: UserDAO
@@ -27,7 +29,7 @@ class UserViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UserState())
 
-    fun onEvent(event: UserEvent) {
+    fun onUserEvent(event: UserEvent) {
         when (event) {
             is UserEvent.SaveUser -> {
                 val name = _state.value.name
@@ -103,8 +105,10 @@ class UserViewModel(
                 val password = state.value.password
 
                 viewModelScope.launch {
-                    // Check if user exists with email
-                    val user = userDao.getUserByEmail(email)
+                    // Check if user exists with email, important using Dispatchers.IO to don't realize querys on main thread
+                    val user = withContext(Dispatchers.IO) {
+                        userDao.getUserByEmail(email)
+                    }
                     if (user != null) {
                         // User exists, check password
                         if (user.password == password) {

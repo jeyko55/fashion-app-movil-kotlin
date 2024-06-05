@@ -7,7 +7,7 @@ import com.example.fashion_app_movil_kotlin.database.item.ItemDAO
 import com.example.fashion_app_movil_kotlin.database.user.User
 import com.example.fashion_app_movil_kotlin.database.user.UserDAO
 import com.example.fashion_app_movil_kotlin.database.user_item.UserItem
-import com.example.fashion_app_movil_kotlin.database.useritem.UserItemDAO
+import com.example.fashion_app_movil_kotlin.database.user_item.UserItemDAO
 
 @Database(
     entities = [User::class, Item::class, UserItem::class],

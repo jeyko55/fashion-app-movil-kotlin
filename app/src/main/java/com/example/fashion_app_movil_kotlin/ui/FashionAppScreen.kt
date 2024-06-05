@@ -1,40 +1,12 @@
 package com.example.fashion_app_movil_kotlin.ui
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.fashion_app_movil_kotlin.R
-import com.example.fashion_app_movil_kotlin.events.ItemEvent
 import com.example.fashion_app_movil_kotlin.ui.home.AddClothingScreen
 import com.example.fashion_app_movil_kotlin.ui.home.ClosetScreen
 import com.example.fashion_app_movil_kotlin.ui.login_register.LoginRegisterScreen
@@ -82,7 +54,7 @@ fun FashionApp(
             composable(route = Routes.REGISTER_SCREEN) {
                 RegisterScreen(
                     userViewModel = userViewModel,
-                    onEvent = userViewModel::onEvent,
+                    onUserEvent = userViewModel::onUserEvent,
                     onUserCreatedNav = {
                         navController.navigate((Routes.LOGIN_REGISTER_SCREEN))
                     })
@@ -90,7 +62,7 @@ fun FashionApp(
             composable(route = Routes.LOGIN_SCREEN) {
                 LoginScreen(
                     userViewModel = userViewModel,
-                    onEvent = userViewModel::onEvent,
+                    onUserEvent = userViewModel::onUserEvent,
                     onUserValidNav = {
                         navController.navigate(Routes.CLOSET_SCREEN)
                     }
@@ -98,8 +70,11 @@ fun FashionApp(
             }
             composable(route = Routes.CLOSET_SCREEN) {
                 ClosetScreen(
+                    userViewModel = userViewModel,
                     itemViewModel = itemViewModel,
-                    onEvent = itemViewModel::onEvent,
+                    userItemViewModel = userItemViewModel,
+
+                    onItemEvent = itemViewModel::onEvent,
 
                     // BottomBar
                     onClosetSelected = {
@@ -125,8 +100,12 @@ fun FashionApp(
             }
             composable(route = Routes.ADD_CLOTHING_SCREEN) {
                 AddClothingScreen(
+                    userViewModel = userViewModel,
                     itemViewModel = itemViewModel,
-                    onEvent = itemViewModel::onEvent,
+                    userItemViewModel = userItemViewModel,
+
+                    onItemEvent = itemViewModel::onEvent,
+                    onUserItemEvent = userItemViewModel::onUserItemEvent,
                     // BottomBar
                     onClosetSelected = {
                         navController.navigate((Routes.CLOSET_SCREEN))
@@ -159,8 +138,11 @@ fun FashionApp(
             }
             composable(route = Routes.CLOSET_SCREEN) {
                 ClosetScreen(
+                    userViewModel = userViewModel,
                     itemViewModel = itemViewModel,
-                    onEvent = itemViewModel::onEvent,
+                    userItemViewModel = userItemViewModel,
+
+                    onItemEvent = itemViewModel::onEvent,
 
                     // BottomBar
                     onClosetSelected = {
@@ -186,8 +168,11 @@ fun FashionApp(
             }
             composable(route = Routes.CLOSET_SCREEN) {
                 ClosetScreen(
+                    userViewModel = userViewModel,
                     itemViewModel = itemViewModel,
-                    onEvent = itemViewModel::onEvent,
+                    userItemViewModel = userItemViewModel,
+
+                    onItemEvent = itemViewModel::onEvent,
 
                     // BottomBar
                     onClosetSelected = {
@@ -213,8 +198,11 @@ fun FashionApp(
             }
             composable(route = Routes.CLOSET_SCREEN) {
                 ClosetScreen(
+                    userViewModel = userViewModel,
                     itemViewModel = itemViewModel,
-                    onEvent = itemViewModel::onEvent,
+                    userItemViewModel = userItemViewModel,
+
+                    onItemEvent = itemViewModel::onEvent,
 
                     // BottomBar
                     onClosetSelected = {
@@ -240,8 +228,11 @@ fun FashionApp(
             }
             composable(route = Routes.CLOSET_SCREEN) {
                 ClosetScreen(
+                    userViewModel = userViewModel,
                     itemViewModel = itemViewModel,
-                    onEvent = itemViewModel::onEvent,
+                    userItemViewModel = userItemViewModel,
+
+                    onItemEvent = itemViewModel::onEvent,
 
                     // BottomBar
                     onClosetSelected = {

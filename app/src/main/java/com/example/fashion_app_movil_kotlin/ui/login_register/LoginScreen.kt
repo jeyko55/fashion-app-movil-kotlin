@@ -35,7 +35,7 @@ import com.example.fashion_app_movil_kotlin.ui.components.*
 @Composable
 fun LoginScreen(
     userViewModel: UserViewModel,
-    onEvent: (UserEvent) -> Unit,
+    onUserEvent: (UserEvent) -> Unit,
     onUserValidNav: () -> Unit
 ) {
     val userState by userViewModel.state.collectAsState()
@@ -56,7 +56,7 @@ fun LoginScreen(
             LoginPortrait(
                 Modifier.align(Alignment.Center),
                 userState,
-                onEvent,
+                onUserEvent,
                 onUserValidNav
             )
         }
@@ -67,7 +67,7 @@ fun LoginScreen(
 fun LoginPortrait(
     modifier: Modifier,
     state: UserState,
-    onEvent: (UserEvent) -> Unit,
+    onUserEvent: (UserEvent) -> Unit,
     onUserValidNav: () -> Unit
 ) {
     var showEmailError by remember { mutableStateOf(false) }
@@ -121,7 +121,7 @@ fun LoginPortrait(
             ),
             value = state.email,
             onValueChange = {
-                onEvent(UserEvent.SetEmail(it))
+                onUserEvent(UserEvent.SetEmail(it))
             },
             isError = !state.isEmailValid // Set error state based on isEmailValid
         )
@@ -160,7 +160,7 @@ fun LoginPortrait(
             ),
             value = state.password,
             onValueChange = {
-                onEvent(UserEvent.SetPassword(it))
+                onUserEvent(UserEvent.SetPassword(it))
             },
             visualTransformation = PasswordVisualTransformation(),
             isError = !state.isPasswordValid // Set error state based on isPasswordValid
@@ -199,7 +199,7 @@ fun LoginPortrait(
                 containerColor = Color(0xFF03A9F4),
             ),
             onClick = {
-                onEvent(UserEvent.ValidateUser)
+                onUserEvent(UserEvent.ValidateUser)
             },
         ) {
             Text(text = "Iniciar sesión")

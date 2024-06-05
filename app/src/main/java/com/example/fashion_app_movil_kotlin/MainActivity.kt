@@ -7,15 +7,12 @@ import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.fashion_app_movil_kotlin.database.FashionAppDatabase
 import com.example.fashion_app_movil_kotlin.ui.FashionApp
 import com.example.fashion_app_movil_kotlin.ui.theme.FashionappmovilkotlinTheme
 import com.example.fashion_app_movil_kotlin.view_models.ItemViewModel
 import com.example.fashion_app_movil_kotlin.view_models.UserItemViewModel
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
-import kotlinx.coroutines.*
 
 
 

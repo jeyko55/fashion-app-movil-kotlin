@@ -1,10 +1,9 @@
-package com.example.fashion_app_movil_kotlin.database.useritem
+package com.example.fashion_app_movil_kotlin.database.user_item
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
-import com.example.fashion_app_movil_kotlin.database.user_item.UserItem
 import kotlinx.coroutines.flow.Flow
 
 @Dao

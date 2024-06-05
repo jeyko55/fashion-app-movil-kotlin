@@ -11,7 +11,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,29 +38,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.fashion_app_movil_kotlin.R
 import com.example.fashion_app_movil_kotlin.events.ItemEvent
 import com.example.fashion_app_movil_kotlin.states.ItemState
 import com.example.fashion_app_movil_kotlin.view_models.ItemViewModel
 import coil.compose.rememberImagePainter
-import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.ui.components.*
-import java.util.Objects
-import android.content.Context
-import android.net.Uri
-import android.provider.OpenableColumns
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
+import com.example.fashion_app_movil_kotlin.events.UserItemEvent
+import com.example.fashion_app_movil_kotlin.states.UserItemState
+import com.example.fashion_app_movil_kotlin.states.UserState
+import com.example.fashion_app_movil_kotlin.view_models.UserItemViewModel
+import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 
 @Composable
 fun AddClothingScreen(
 
+    userViewModel: UserViewModel,
     itemViewModel: ItemViewModel,
+    userItemViewModel: UserItemViewModel,
 
     // BottomBar Icons Selections
     onClosetSelected: () -> Unit,
@@ -74,17 +69,24 @@ fun AddClothingScreen(
     onAddItemSelected: () -> Unit,
 
     // Eventos locales
-    onEvent: (ItemEvent) -> Unit,
+    onItemEvent: (ItemEvent) -> Unit,
+    onUserItemEvent: (UserItemEvent) -> Unit,
     onItemCreatedNav: () -> Unit
 ) {
+    val userState by userViewModel.state.collectAsState()
     val itemState by itemViewModel.state.collectAsState()
+    val userItemState by userItemViewModel.state.collectAsState()
 
     Box(
         Modifier.fillMaxSize()
     ) {
         AddClothingPortrait(
             modifier = Modifier,
+
+            userState,
             itemState,
+            userItemState,
+
             onClosetSelected,
             onCombinationsSelected,
             onCalendarSelected,
@@ -94,7 +96,8 @@ fun AddClothingScreen(
 
             onAddItemSelected,
 
-            onEvent,
+            onItemEvent,
+            onUserItemEvent,
             onItemCreatedNav
         )
     }
@@ -104,7 +107,11 @@ fun AddClothingScreen(
 @Composable
 fun AddClothingPortrait(
     modifier: Modifier,
+
+    userState: UserState,
     itemState: ItemState,
+    userItemState: UserItemState,
+
     onClosetSelected: () -> Unit,
     onCombinationsSelected: () -> Unit,
     onCalendarSelected: () -> Unit,
@@ -115,7 +122,8 @@ fun AddClothingPortrait(
     onAddItemSelected: () -> Unit,
 
     // Eventos locales
-    onEvent: (ItemEvent) -> Unit,
+    onItemEvent: (ItemEvent) -> Unit,
+    onUserItemEvent: (UserItemEvent) -> Unit,
     onItemCreatedNav: () -> Unit
 ) {
     val context = LocalContext.current // Get the current context
@@ -131,7 +139,7 @@ fun AddClothingPortrait(
                     var selectedImage = selectedImageUri.toString()
                     Log.d("ImagePath", "Saved image path: $selectedImage")
 
-                    onEvent(ItemEvent.SetImagePath(selectedImage))
+                    onItemEvent(ItemEvent.SetImagePath(selectedImage))
                 }
             }
         }
@@ -271,7 +279,7 @@ fun AddClothingPortrait(
                                     text = { Text(selectionOption) },
                                     onClick = {
                                         selectedOptionText = selectionOption
-                                        onEvent(ItemEvent.SetClothingType(selectionOption))
+                                        onItemEvent(ItemEvent.SetClothingType(selectionOption))
                                         expanded = false
                                     }
                                 )
@@ -304,6 +312,7 @@ fun AddClothingPortrait(
                         "Blanco",
                         "Gris"
                     )
+
 
                     ExposedDropdownMenuBox(
                         expanded = expanded,
@@ -350,7 +359,7 @@ fun AddClothingPortrait(
                                     onClick = {
                                         selectedColorText = color
                                         expanded = false
-                                        onEvent(ItemEvent.SetColor(color)) // Actualiza el color en el estado
+                                        onItemEvent(ItemEvent.SetColor(color)) // Actualiza el color en el estado
                                     }
                                 )
                             }
@@ -372,8 +381,17 @@ fun AddClothingPortrait(
                         containerColor = Color(0xFF03A9F4),
                     ),
                     onClick = {
-                        onEvent(ItemEvent.SaveItem)
-                        restartState(onEvent)// Pone los campos en blanco
+                        onItemEvent(ItemEvent.SaveItem) // Guarda el item en la tabla Item
+
+                        // IMPORTANTE: Aquí se guardan los datos de UserItem en la tabla intermedia UserItem
+                        val userActual = userState.users.find { it.email == userState.email }
+                        val itemActual = itemState.items.find { it.imagePath == itemState.imagePath }
+
+                        onUserItemEvent(UserItemEvent.SetUserId(userActual!!.userId)) // Pone el userId de UserItemState igual al userActual
+                        onUserItemEvent(UserItemEvent.SetItemId(itemActual!!.itemId)) // Pone el itemId de UserItemState igual al itemActual
+                        onUserItemEvent(UserItemEvent.SaveUserItem)
+
+                        restartItemState(onItemEvent)// Pone los campos en blanco
                         onItemCreatedNav()
                     },
                     enabled = isItemValid(itemState), // FALTA HACER
@@ -391,7 +409,7 @@ fun isItemValid(state: ItemState): Boolean {
             && state.color.isNotBlank()
 }
 
-fun restartState(onEvent: (ItemEvent) -> Unit) {
+fun restartItemState(onEvent: (ItemEvent) -> Unit) {
     onEvent(ItemEvent.SetImagePath(""))
     onEvent(ItemEvent.SetClothingType(""))
     onEvent(ItemEvent.SetColor(""))
