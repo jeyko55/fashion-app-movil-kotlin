@@ -1,26 +1,16 @@
 package com.example.fashion_app_movil_kotlin.ui.home
 
-import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -35,9 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
 import com.example.fashion_app_movil_kotlin.R
-import com.example.fashion_app_movil_kotlin.database.item.Item
 import com.example.fashion_app_movil_kotlin.events.ItemEvent
 import com.example.fashion_app_movil_kotlin.events.UserEvent
 import com.example.fashion_app_movil_kotlin.events.UserItemEvent
@@ -149,7 +137,28 @@ fun ClosetPortrait(
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 Spacer(modifier = Modifier.height(16.dp))
+
+                val userActual = userState.users.find { it.email == userState.email }
+
+                // Filtrar los ítems correspondientes al usuario actual
+                val userItems = if (userActual != null) {
+                    userItemState.userItem.filter { it.userId == userActual.userId }
+                } else {
+                    emptyList()
+                }
+
+                // Obtener los ítems desde itemState.items basados en los itemIds de userItems
+                val items = itemState.items.filter { item ->
+                    userItems.any { userItem -> userItem.itemId == item.itemId }
+                }
+
+                // Obtener las prendas superiores, inferiores y calzado
+                val topItems = items.filter { it.clothingType == "Prenda superior" }
+                val bottomItems = items.filter { it.clothingType == "Prenda inferior" }
+                val shoeItems = items.filter { it.clothingType == "Calzado" }
+
                 // Title "Prendas superiores"
                 Text(
                     text = "Prendas superiores",
@@ -159,11 +168,9 @@ fun ClosetPortrait(
                     modifier = Modifier
                 )
                 // Display top items
-                // Flag para ver si hay items de ptendas inferiores
-                var flagTopItems = itemState.items.any { it.clothingType == "Prenda superior" }
                 //var actualUser = userState.users.find { it.email == userState.email }
-                if (itemState.items.isNotEmpty() && flagTopItems /*&& actualUser.userId == */) {
-                    DisplayCarouselByClothingType(itemState.items, "Prenda superior")
+                if (topItems.isNotEmpty()) {
+                    DisplayCarouselByClothingType(topItems)
                 } else {
                     // Display the default placeholder image if no image is selected
                     Image(
@@ -174,7 +181,7 @@ fun ClosetPortrait(
                             .width(100.dp)
                     )
                 }
-                // Título Prendas inferiores
+                // Title "Prendas inferiores"
                 Text(
                     text = "Prendas inferiores",
                     fontSize = 20.sp,
@@ -182,10 +189,9 @@ fun ClosetPortrait(
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                 )
-                // Flag para ver si hay items de ptendas inferiores
-                var flagBottomItems = itemState.items.any { it.clothingType == "Prenda inferior" }
-                if (itemState.items.isNotEmpty() && flagBottomItems) {
-                    DisplayCarouselByClothingType(itemState.items, "Prenda inferior")
+                // Display bottom items
+                if (bottomItems.isNotEmpty()) {
+                    DisplayCarouselByClothingType(bottomItems)
                 } else {
                     // Display the default placeholder image if no image is selected
                     Image(
@@ -196,7 +202,7 @@ fun ClosetPortrait(
                             .width(100.dp)
                     )
                 }
-                // Display shoes items
+                // Title "Calzado"
                 Text(
                     text = "Calzado",
                     fontSize = 20.sp,
@@ -205,10 +211,8 @@ fun ClosetPortrait(
                     modifier = Modifier
                 )
                 // Display shoes items
-                // Flag para ver si hay items de calzado
-                var flagShoes = itemState.items.any { it.clothingType == "Calzado" }
-                if (itemState.items.isNotEmpty() && flagShoes) {
-                    DisplayCarouselByClothingType(itemState.items, "Calzado")
+                if (shoeItems.isNotEmpty()) {
+                    DisplayCarouselByClothingType(shoeItems)
                 } else {
                     // Display the default placeholder image if no image is selected
                     Image(

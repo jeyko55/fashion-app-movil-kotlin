@@ -16,21 +16,19 @@ import com.example.fashion_app_movil_kotlin.database.item.Item
 
 
 @Composable
-fun DisplayCarouselByClothingType(items: List<Item>, clothingType: String) {
+fun DisplayCarouselByClothingType(items: List<Item>) {
     LazyRow(
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(items) { item ->
-            if (item.clothingType == clothingType) {
-                Image(
-                    painter = rememberImagePainter(Uri.parse(item.imagePath)),
-                    contentDescription = item.clothingType,
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                )
-            }
+            Image(
+                painter = rememberImagePainter(Uri.parse(item.imagePath)),
+                contentDescription = item.clothingType,
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(100.dp)
+            )
         }
     }
 }

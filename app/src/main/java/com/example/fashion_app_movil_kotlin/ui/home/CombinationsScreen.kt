@@ -30,6 +30,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -125,6 +128,8 @@ fun CombinationsPortrait(
     onProfileSelected: () -> Unit,
     onAddClothingSelected: () -> Unit,
 ) {
+    var currentCombination by remember { mutableStateOf<Combination?>(null) }
+
     Scaffold(
         topBar = {
             TopAppBarImage(modifier = Modifier)
@@ -148,8 +153,7 @@ fun CombinationsPortrait(
         ) {
             Column(
                 modifier = modifier
-                    .fillMaxWidth()
-                    .padding(32.dp),
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Title "Prendas superiores"
@@ -163,85 +167,107 @@ fun CombinationsPortrait(
 
                 Spacer(modifier = Modifier.padding(4.dp))
 
-                // Obtener las prendas superiores, inferiores y calzado
-                val topItems = itemState.items.filter { it.clothingType == "Prenda superior" }
-                val bottomItems = itemState.items.filter { it.clothingType == "Prenda inferior" }
-                val shoes = itemState.items.filter { it.clothingType == "Calzado" }
+                val userActual = userState.users.find { it.email == userState.email }
 
-                // Generar combinaciones aleatorias
-                val combinations = generateRandomCombinations(topItems, bottomItems, shoes)
-                // Mostrar combinaciones
-                if (combinations.isNotEmpty()) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(1),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(combinations) { combination ->
-                            CombinationItem(combination)
-                        }
-                    }
+                // Filtrar los ítems correspondientes al usuario actual
+                val userItems = if (userActual != null) {
+                    userItemState.userItem.filter { it.userId == userActual.userId }
                 } else {
-                    // Display the default placeholder image if no combinations can be made
-                    Image(
-                        painter = painterResource(id = R.drawable.null_pointer_symbol),
-                        contentDescription = "Add Clothing Image",
-                        modifier = Modifier
-                            .height(100.dp)
-                            .width(100.dp)
-                    )
+                    emptyList()
                 }
 
+                // Obtener los ítems desde itemState.items basados en los itemIds de userItems
+                val items = itemState.items.filter { item ->
+                    userItems.any { userItem -> userItem.itemId == item.itemId }
+                }
 
-                Spacer(modifier = Modifier.padding(20.dp))
+                // Obtener las prendas superiores, inferiores y calzado
+                val topItems = items.filter { it.clothingType == "Prenda superior" }
+                val bottomItems = items.filter { it.clothingType == "Prenda inferior" }
+                val shoes = items.filter { it.clothingType == "Calzado" }
 
+                // Generar combinaciones aleatorias
+                val combinations = generateRandomCombination(topItems, bottomItems, shoes)
+
+                if (currentCombination == null) {
+                    currentCombination = generateRandomCombination(topItems, bottomItems, shoes)
+                }
+
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(1),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(listOfNotNull(currentCombination)) { combination ->
+                        CombinationItem(combination)
+                    }
+                }
                 Button(
-                    // 'Agendar' Button
                     modifier = Modifier
                         .height(50.dp)
                         .width(250.dp),
-                    // Color similar a las vistas de Figma
                     colors = ButtonDefaults.buttonColors(
                         disabledContentColor = Color.White,
                         contentColor = Color.White,
                         containerColor = Color(0xFF03A9F4),
                     ),
                     onClick = {
-                        onItemEvent(ItemEvent.SaveItem) // Guarda el item en la tabla Item
-                        restartItemState(onItemEvent)// Pone los campos en blanco
-                        // onAgendarNav()
+                        currentCombination = generateRandomCombination(topItems, bottomItems, shoes)
                     },
-                    enabled = isItemValid(itemState), // FALTA HACER
+                    enabled = true,
                 ) {
-                    Text(text = "Agendar")
-                } // End 'Agendar' Button
-
-
+                    Text(text = "Combinar prendas")
+                }
             } // End Column
         } // End Box
     } // End Scaffold
 } // End CombinationsPortrait
 // Función para generar combinaciones aleatorias
-fun generateRandomCombinations(
-    topItems: List<Item>,
-    bottomItems: List<Item>,
-    shoes: List<Item>
-): List<Combination> {
-    val combinations = mutableListOf<Combination>()
+
+fun generateRandomCombination(topItems: List<Item>, bottomItems: List<Item>, shoes: List<Item>): Combination? {
     if (topItems.isNotEmpty() && bottomItems.isNotEmpty() && shoes.isNotEmpty()) {
-        // Limitar el número de combinaciones a la cantidad mínima de items en cada categoría
-        val limit = minOf(topItems.size, bottomItems.size, shoes.size)
-        repeat(limit) {
-            val topItem = topItems.random()
-            val bottomItem = bottomItems.random()
-            val shoe = shoes.random()
-            combinations.add(Combination(topItem, bottomItem, shoe))
-        }
+        val topItem = topItems.random()
+        val bottomItem = bottomItems.random()
+        val shoe = shoes.random()
+        return Combination(topItem, bottomItem, shoe)
     }
-    return combinations
+    return null
 }
 
-// Clase de datos para una combinación
+@Composable
+fun DisplayCombination(combination: Combination) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("Prenda superior:")
+        Image(
+            painter = rememberImagePainter(data = combination.topItem.imagePath),
+            contentDescription = null,
+            modifier = Modifier
+                .width(100.dp)
+                .height(100.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text("Prenda inferior:")
+        Image(
+            painter = rememberImagePainter(data = combination.bottomItem.imagePath),
+            contentDescription = null,
+            modifier = Modifier
+                .width(100.dp)
+                .height(100.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text("Calzado:")
+        Image(
+            painter = rememberImagePainter(data = combination.shoe.imagePath),
+            contentDescription = null,
+            modifier = Modifier
+                .width(100.dp)
+                .height(100.dp)
+        )
+    }
+}
+
 data class Combination(
     val topItem: Item,
     val bottomItem: Item,
@@ -250,24 +276,5 @@ data class Combination(
 
 @Composable
 fun CombinationItem(combination: Combination) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        DisplayClothingItem(combination.topItem)
-        DisplayClothingItem(combination.bottomItem)
-        DisplayClothingItem(combination.shoe)
-    }
-}
-
-@Composable
-fun DisplayClothingItem(item: Item) {
-    // Muestra una prenda de vestir individual
-    Image(
-        painter = rememberImagePainter(data = Uri.parse(item.imagePath)),
-        contentDescription = "descipción cualquiera",
-        modifier = Modifier
-            .height(100.dp)
-            .width(100.dp)
-    )
+    DisplayCombination(combination)
 }

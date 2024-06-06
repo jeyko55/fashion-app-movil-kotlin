@@ -15,7 +15,7 @@ interface UserItemDAO {
     @Query("SELECT * FROM user_item")
     fun getAllUserItem(): Flow<List<UserItem>>
     @Query("SELECT * FROM user_item WHERE user_id = :userId")
-    fun getUserItems(userId: Int): Flow<List<UserItem>>
+    fun getUserItems (userId: Int): Flow<List<UserItem>>
 
     @Query("SELECT * FROM user_item WHERE item_id = :itemId")
     fun getItemUsers(itemId: Int): Flow<List<UserItem>>
