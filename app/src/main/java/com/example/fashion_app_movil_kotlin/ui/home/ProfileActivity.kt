@@ -1,7 +1,5 @@
 package com.example.fashion_app_movil_kotlin.ui.home
 
-import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,18 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -55,7 +46,7 @@ import com.example.fashion_app_movil_kotlin.view_models.ItemViewModel
 import com.example.fashion_app_movil_kotlin.view_models.UserItemViewModel
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
 @Composable
-fun CombinationsScreen (
+fun ProfileScreen (
     // View Models
     userViewModel: UserViewModel,
     itemViewModel: ItemViewModel,
@@ -83,9 +74,7 @@ fun CombinationsScreen (
     Box(
         Modifier.fillMaxSize()
     ) {
-        BackgroundImage(modifier = Modifier, resourceId = R.drawable.background_home_image)
-
-        CombinationsPortrait(
+        ProfilePortrait(
             modifier = Modifier,
             // States from view models
             userState,
@@ -108,7 +97,7 @@ fun CombinationsScreen (
 }
 
 @Composable
-fun CombinationsPortrait(
+fun ProfilePortrait(
     modifier: Modifier,
 
     // States from view models
@@ -128,8 +117,6 @@ fun CombinationsPortrait(
     onProfileSelected: () -> Unit,
     onAddClothingSelected: () -> Unit,
 ) {
-    var currentCombination by remember { mutableStateOf<Combination?>(null) }
-
     Scaffold(
         topBar = {
             TopAppBarImage(modifier = Modifier)
@@ -151,130 +138,52 @@ fun CombinationsPortrait(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            BackgroundImage(modifier = Modifier, resourceId = R.drawable.background_home_image)
+
             Column(
                 modifier = modifier
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Title "Prendas superiores"
-                Text(
-                    text = "Recomendaciones",
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(8.dp)
-                )
-
-                Spacer(modifier = Modifier.padding(4.dp))
 
                 val userActual = userState.users.find { it.email == userState.email }
-
-                // Filtrar los ítems correspondientes al usuario actual
-                val userItems = if (userActual != null) {
-                    userItemState.userItem.filter { it.userId == userActual.userId }
-                } else {
-                    emptyList()
+                Spacer(modifier = Modifier.height(30.dp))
+                userActual?.let { user ->
+                    Text(
+                        text = "Nombre: ${user.name}",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        text = "Email: ${user.email}",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        text = "Teléfono: ${user.phoneNumber}",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                } ?: run {
+                    Text(
+                        text = "No se encontró el usuario.",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Red,
+                        modifier = Modifier.padding(16.dp)
+                    )
                 }
 
-                // Obtener los ítems desde itemState.items basados en los itemIds de userItems
-                val items = itemState.items.filter { item ->
-                    userItems.any { userItem -> userItem.itemId == item.itemId }
-                }
-
-                // Obtener las prendas superiores, inferiores y calzado
-                val topItems = items.filter { it.clothingType == "Prenda superior" }
-                val bottomItems = items.filter { it.clothingType == "Prenda inferior" }
-                val shoes = items.filter { it.clothingType == "Calzado" }
-
-                // Generar combinaciones aleatorias
-                val combinations = generateRandomCombination(topItems, bottomItems, shoes)
-
-                if (currentCombination == null) {
-                    currentCombination = generateRandomCombination(topItems, bottomItems, shoes)
-                }
-
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(1),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(listOfNotNull(currentCombination)) { combination ->
-                        CombinationItem(combination)
-                    }
-                }
-                Button(
-                    modifier = Modifier
-                        .height(50.dp)
-                        .width(250.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        disabledContentColor = Color.White,
-                        contentColor = Color.White,
-                        containerColor = Color(0xFF03A9F4),
-                    ),
-                    onClick = {
-                        currentCombination = generateRandomCombination(topItems, bottomItems, shoes)
-                    },
-                    enabled = true,
-                ) {
-                    Text(text = "Combinar prendas")
-                }
             } // End Column
         } // End Box
     } // End Scaffold
 } // End CombinationsPortrait
-// Función para generar combinaciones aleatorias
-
-fun generateRandomCombination(topItems: List<Item>, bottomItems: List<Item>, shoes: List<Item>): Combination? {
-    if (topItems.isNotEmpty() && bottomItems.isNotEmpty() && shoes.isNotEmpty()) {
-        val topItem = topItems.random()
-        val bottomItem = bottomItems.random()
-        val shoe = shoes.random()
-        return Combination(topItem, bottomItem, shoe)
-    }
-    return null
-}
-
-@Composable
-fun DisplayCombination(combination: Combination) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Prenda superior:")
-        Image(
-            painter = rememberImagePainter(data = combination.topItem.imagePath),
-            contentDescription = null,
-            modifier = Modifier
-                .width(100.dp)
-                .height(100.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text("Prenda inferior:")
-        Image(
-            painter = rememberImagePainter(data = combination.bottomItem.imagePath),
-            contentDescription = null,
-            modifier = Modifier
-                .width(100.dp)
-                .height(100.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text("Calzado:")
-        Image(
-            painter = rememberImagePainter(data = combination.shoe.imagePath),
-            contentDescription = null,
-            modifier = Modifier
-                .width(100.dp)
-                .height(100.dp)
-        )
-    }
-}
-
-data class Combination(
-    val topItem: Item,
-    val bottomItem: Item,
-    val shoe: Item
-)
-
-@Composable
-fun CombinationItem(combination: Combination) {
-    DisplayCombination(combination)
-}

@@ -3,15 +3,22 @@ package com.example.fashion_app_movil_kotlin.ui.login_register
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -23,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,7 +45,7 @@ import com.example.fashion_app_movil_kotlin.ui.components.*
 fun LoginScreen(
     userViewModel: UserViewModel,
     onUserEvent: (UserEvent) -> Unit,
-    onUserValidNav: () -> Unit
+    onUserValidNav: () -> Unit,
 ) {
     val userState by userViewModel.state.collectAsState()
 
@@ -52,7 +60,7 @@ fun LoginScreen(
             .fillMaxSize()
 
     ) {
-        BackgroundImage(Modifier.fillMaxSize(), resourceId = R.drawable.background_image)
+        BackgroundImage(Modifier, resourceId = R.drawable.background_image)
         Box {
             LoginPortrait(
                 Modifier.align(Alignment.Center),
@@ -69,10 +77,11 @@ fun LoginPortrait(
     modifier: Modifier,
     state: UserState,
     onUserEvent: (UserEvent) -> Unit,
-    onUserValidNav: () -> Unit
+    onUserValidNav: () -> Unit,
 ) {
     var showEmailError by remember { mutableStateOf(false) }
     var showPasswordError by remember { mutableStateOf(false) }
+    var passwordVisibility by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.showUserNotFoundError) {
         if (state.showUserNotFoundError) {
@@ -149,24 +158,44 @@ fun LoginPortrait(
         Spacer(modifier = Modifier.padding(4.dp))
 
         @OptIn(ExperimentalMaterial3Api::class)
-        TextField( // Password Field
-            placeholder = { Text(text = "Contraseña") },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            singleLine = true,
-            maxLines = 1,
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
-            value = state.password,
-            onValueChange = {
-                onUserEvent(UserEvent.SetPassword(it))
-            },
-            visualTransformation = PasswordVisualTransformation(),
-            isError = !state.isPasswordValid // Set error state based on isPasswordValid
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TextField( // Password Field
+                placeholder = { Text(text = "Contraseña") },
+                modifier = Modifier.weight(1f),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                singleLine = true,
+                maxLines = 1,
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                value = state.password,
+                onValueChange = {
+                    onUserEvent(UserEvent.SetPassword(it))
+                },
+                visualTransformation = if (passwordVisibility) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
+                isError = !state.isPasswordValid // Set error state based on isPasswordValid
+            )
 
-        )
+            FloatingActionButton(
+                onClick = {
+                    passwordVisibility = !passwordVisibility
+                },
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .align(Alignment.CenterVertically)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Lock,
+                    contentDescription = "Toggle password visibility",
+                    tint = Color.Black
+                )
+            }
+        }
 
         if (showPasswordError) {
             Box(
@@ -176,7 +205,7 @@ fun LoginPortrait(
                     .align(Alignment.CenterHorizontally)
             ) {
                 Text(
-                    text = "ERROR: CONTRASEÑA INCORRECTA",
+                    text = "ERROR: VERIFIQUE SUS DATOS",
                     color = Color.Red,
                     modifier = Modifier.align(Alignment.Center),
                     fontSize = 20.sp,
@@ -184,8 +213,6 @@ fun LoginPortrait(
                 )
             }
         }
-
-        Spacer(modifier = Modifier.padding(8.dp))
 
         Spacer(modifier = Modifier.padding(16.dp))
 
@@ -208,7 +235,8 @@ fun LoginPortrait(
 
         Spacer(modifier = Modifier.padding(4.dp))
 
-        ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
+        // ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
     }
 }
+
 

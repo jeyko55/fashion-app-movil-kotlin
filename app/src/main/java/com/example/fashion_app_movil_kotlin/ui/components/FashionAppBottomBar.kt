@@ -44,7 +44,7 @@ fun FashionAppBottomBar(
             )
         }
 
-        Spacer(modifier = Modifier.padding(8.dp))
+        Spacer(modifier = Modifier.padding(28.dp))
 
         IconButton( // Combinations Button
             onClick = {
@@ -57,8 +57,8 @@ fun FashionAppBottomBar(
             )
         }
 
-        Spacer(modifier = Modifier.padding(8.dp))
-
+        Spacer(modifier = Modifier.padding(28.dp))
+        /*
         IconButton( // Calendar Button
             onClick = {
                 onCalendarSelected()
@@ -84,7 +84,7 @@ fun FashionAppBottomBar(
         }
 
         Spacer(modifier = Modifier.padding(8.dp))
-
+        */
         IconButton( // Profile Button
             onClick = {
                 onProfileSelected()

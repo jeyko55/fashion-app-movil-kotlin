@@ -196,10 +196,6 @@ fun RegisterPortrait(
         ) {
             Text(text = "Registrarse")
         }
-
-        Spacer(modifier = Modifier.padding(4.dp))
-
-        ForgotPassword(Modifier.align(Alignment.CenterHorizontally))
     }
 }
 

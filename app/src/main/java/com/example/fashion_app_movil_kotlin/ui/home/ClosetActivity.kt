@@ -66,27 +66,27 @@ fun ClosetScreen(
     Box(
         Modifier.fillMaxSize()
     ) {
-        BackgroundImage(modifier = Modifier, resourceId = R.drawable.background_home_image)
+        Box{
+            ClosetPortrait(
+                modifier = Modifier,
+                // States from View Models
+                userState,
+                itemState,
+                userItemState,
 
-        ClosetPortrait(
-            modifier = Modifier,
-            // States from View Models
-            userState,
-            itemState,
-            userItemState,
+                // Eventos locales
+                onUserEvent,
+                onItemEvent,
+                onUserItemEvent,
 
-            // Eventos locales
-            onUserEvent,
-            onItemEvent,
-            onUserItemEvent,
-
-            onClosetSelected,
-            onCombinationsSelected,
-            onCalendarSelected,
-            onArchivedSelected,
-            onProfileSelected,
-            onAddClothingSelected,
-        )
+                onClosetSelected,
+                onCombinationsSelected,
+                onCalendarSelected,
+                onArchivedSelected,
+                onProfileSelected,
+                onAddClothingSelected,
+            )
+        }
     }
 }
 
@@ -132,6 +132,8 @@ fun ClosetPortrait(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            BackgroundImage(modifier = Modifier, resourceId = R.drawable.background_home_image)
+
             Column(
                 modifier = modifier
                     .fillMaxWidth(),

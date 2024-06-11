@@ -1,7 +1,6 @@
 package com.example.fashion_app_movil_kotlin.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,18 +18,6 @@ import com.example.fashion_app_movil_kotlin.ui.login_register.RegisterScreen
 import com.example.fashion_app_movil_kotlin.view_models.ItemViewModel
 import com.example.fashion_app_movil_kotlin.view_models.UserItemViewModel
 import com.example.fashion_app_movil_kotlin.view_models.UserViewModel
-
-
-@Composable
-fun FashionAppBody(
-    modifier: Modifier = Modifier
-) {
-}
-
-@Composable
-fun FashionAppBottonBar() {
-
-}
 
 @Composable
 fun FashionApp(
@@ -55,20 +42,21 @@ fun FashionApp(
                     },
                 )
             }
-            composable(route = Routes.REGISTER_SCREEN) {
-                RegisterScreen(
-                    userViewModel = userViewModel,
-                    onUserEvent = userViewModel::onUserEvent,
-                    onUserCreatedNav = {
-                        navController.navigate((Routes.LOGIN_REGISTER_SCREEN))
-                    })
-            }
             composable(route = Routes.LOGIN_SCREEN) {
                 LoginScreen(
                     userViewModel = userViewModel,
                     onUserEvent = userViewModel::onUserEvent,
                     onUserValidNav = {
                         navController.navigate(Routes.CLOSET_SCREEN)
+                    }
+                )
+            }
+            composable(route = Routes.REGISTER_SCREEN) {
+                RegisterScreen(
+                    userViewModel = userViewModel,
+                    onUserEvent = userViewModel::onUserEvent,
+                    onUserCreatedNav = {
+                        navController.navigate((Routes.LOGIN_REGISTER_SCREEN))
                     }
                 )
             }
@@ -190,7 +178,35 @@ fun FashionApp(
             }
             composable(route = Routes.PROFILE_SCREEN) {
                 ProfileScreen(
+                    // ViewModels
+                    userViewModel = userViewModel,
+                    itemViewModel = itemViewModel,
+                    userItemViewModel = userItemViewModel,
+                    // Events
+                    onUserEvent = userViewModel::onUserEvent,
+                    onItemEvent = itemViewModel::onItemEvent,
+                    onUserItemEvent = userItemViewModel::onUserItemEvent,
 
+                    // BottomBar
+                    onClosetSelected = {
+                        navController.navigate((Routes.CLOSET_SCREEN))
+                    },
+                    onCombinationsSelected = {
+                        navController.navigate((Routes.COMBINATIONS_SCREEN))
+                    },
+                    onCalendarSelected = {
+                        navController.navigate((Routes.CALENDAR_SCREEN))
+                    },
+                    onArchivedSelected = {
+                        navController.navigate((Routes.ARCHIVED_SCREEN))
+                    },
+                    onProfileSelected = {
+                        navController.navigate((Routes.PROFILE_SCREEN))
+                    },
+                    // Add button
+                    onAddClothingSelected = {
+                        navController.navigate((Routes.ADD_CLOTHING_SCREEN))
+                    },
                 )
             }
         }

@@ -10,7 +10,10 @@ import com.example.fashion_app_movil_kotlin.database.user_item.UserItem
 import com.example.fashion_app_movil_kotlin.database.user_item.UserItemDAO
 
 @Database(
-    entities = [User::class, Item::class, UserItem::class],
+    entities = [
+        User::class,
+        Item::class,
+        UserItem::class],
     version = 3
 )
 
